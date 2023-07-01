@@ -55,7 +55,13 @@ public class IntListExercises {
         while (x > 10) {
             x = x / 10;
         }
-        int firstDigit = x % 10;
+        int firstDigit = 0;
+        if(x==10){
+            firstDigit=1;
+        }
+        else{
+            firstDigit=x%10;
+        }
         return firstDigit == lastDigit;
     }
 
