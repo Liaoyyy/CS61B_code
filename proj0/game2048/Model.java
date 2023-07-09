@@ -94,7 +94,7 @@ public class Model extends Observable {
         setChanged();
     }
 
-    /** Tilt the board toward SIDE. Return true iff this changes the board.
+    /** Tilt the board toward SIDE. Return true if this changes the board.
      *
      * 1. If two Tile objects are adjacent in the direction of motion and have
      *    the same value, they are merged into one Tile of twice the original
@@ -112,9 +112,10 @@ public class Model extends Observable {
 
         // TODO: Modify this.board (and perhaps this.score) to account
         // for the tilt to the Side SIDE. If the board changed, set the
-        // changed local variable to true.
+        // changed local variable to setrue.
 
         checkGameOver();
+
         if (changed) {
             setChanged();
         }
@@ -137,8 +138,19 @@ public class Model extends Observable {
      *  Empty spaces are stored as null.
      * */
     public static boolean emptySpaceExists(Board b) {
-        // TODO: Fill in this function.
-        return false;
+        int length=b.size();
+        int col;
+        int row;
+        boolean isempty=true;//defalut:this Board is empty
+        for(col=0;col<length;col++){
+            for(row=0;row<length;row++){
+                if(b.tile(col,row)==null){
+                    return isempty;
+                }
+            }
+        }
+        isempty=false;
+        return isempty;
     }
 
     /**
@@ -147,9 +159,58 @@ public class Model extends Observable {
      * given a Tile object t, we get its value with t.value().
      */
     public static boolean maxTileExists(Board b) {
-        // TODO: Fill in this function.
+        int curmax=0;
+        int col,row;
+        int length=b.size();
+        boolean eq2max=false;//
+        for(col=0;col<length;col++){
+            for(row=0;row<length;row++){
+                if(b.tile(col,row)!=null){
+                    if(b.tile(col,row).value==MAX_PIECE){
+                        eq2max=true;
+                        return eq2max;
+                    }
+                }
+            }
+        }
+        return eq2max;
+    }
+
+    public static boolean TwoSameAdjacentTilesExist(Board b) {
+        int col,row;
+        int length=b.size();
+        for(col=0;col<length;col++){
+            for(row=0;row<length;row++){
+                int value=b.tile(col,row).value();
+
+                if(((row-1)>=0)&((row-1)<length)){
+                    if(b.tile(col,row-1).value()==value){
+                        return true;
+                    }
+                }
+                if(((row+1)>=0)&((row+1)<length)){
+                    if(b.tile(col,row+1).value()==value){
+                        return true;
+                    }
+                }
+                if(((col+1)>=0)&((col+1)<length)){
+                    if(b.tile(col+1,row).value()==value){
+                        return true;
+                    }
+                }
+                if(((col-1)>=0)&((col-1)<length)){
+                    if(b.tile(col-1,row).value()==value){
+                        return true;
+                    }
+                }
+
+
+            }
+        }
         return false;
     }
+
+
 
     /**
      * Returns true if there are any valid moves on the board.
@@ -159,7 +220,12 @@ public class Model extends Observable {
      */
     public static boolean atLeastOneMoveExists(Board b) {
         // TODO: Fill in this function.
-        return false;
+        boolean move_exist=false;
+        int col,row;
+        int length=b.size();
+
+        move_exist=TwoSameAdjacentTilesExist(b)|emptySpaceExists(b);
+        return move_exist;
     }
 
 

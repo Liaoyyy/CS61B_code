@@ -73,7 +73,7 @@ public class Tile {
     }
 
     /** My value. */
-    private final int value;
+    final int value;
 
     /** My last position on the board. */
     private final int row, col;
