@@ -33,7 +33,6 @@ public class Main {
         }
 
         Model model = new Model(BOARD_SIZE);
-
         GUI gui;
 
         gui = new GUI("2048 61B", model);

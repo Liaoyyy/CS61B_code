@@ -109,17 +109,78 @@ public class Model extends Observable {
     public boolean tilt(Side side) {
         boolean changed;
         changed = false;
+        int length=this.size();
 
         // TODO: Modify this.board (and perhaps this.score) to account
         // for the tilt to the Side SIDE. If the board changed, set the
-        // changed local variable to setrue.
-
+        // changed local variable to set true.
         checkGameOver();
+        if(gameOver==true){
+            return changed;
+        }
+
+        board.setViewingPerspective(side);
+        for(int col=0;col<length;col++){
+            if(changed==false){
+                changed=TiltOneColumn(col);
+            }
+            else{
+                TiltOneColumn(col);
+            }
+        }
+
+        for(int row=length-1;row>=0;row--){
+            for(int col=0;col<length;col++){
+                int mov_row=isEmptyExistAbove(row,col,length);
+                if((board.tile(col,row)!=null) && mov_row!=-1){
+                    board.move(col,mov_row,board.tile(col,row));
+                    changed=true;
+                }
+            }
+        }
+        board.setViewingPerspective(Side.NORTH);
 
         if (changed) {
             setChanged();
         }
         return changed;
+    }
+
+    /** Move and merge a single column
+     */
+    public boolean TiltOneColumn(int col){
+        int length=board.size();
+        int value1=0;
+        int former_row=length-1;
+        boolean changed=false;
+        for(int row=length-1;row>=0;row--){
+            if(board.tile(col,row)!=null){
+                if(board.tile(col,row).value()!=value1){
+                    former_row=row;
+                    value1=board.tile(col,row).value();
+                }
+                else{
+                    board.move(col,former_row,board.tile(col,row));
+                    score+=value1*2;
+                    value1=0;
+                    changed=true;
+                }
+            }
+        }
+        return changed;
+    }
+
+    /** Return the row number of the empty space if it exits
+    */
+    public int isEmptyExistAbove(int row,int col,int length){
+        int re_row=-1;
+        for(int i=length-1;i>row;i--){
+            if(board.tile(col,i)==null){
+                re_row=i;
+                return re_row;
+            }
+        }
+        return re_row;
     }
 
     /** Checks if the game is over and sets the gameOver variable
@@ -181,30 +242,30 @@ public class Model extends Observable {
         int length=b.size();
         for(col=0;col<length;col++){
             for(row=0;row<length;row++){
-                int value=b.tile(col,row).value();
+                if(b.tile(col,row)!=null) {
+                    int value = b.tile(col, row).value();
 
-                if(((row-1)>=0)&((row-1)<length)){
-                    if(b.tile(col,row-1).value()==value){
-                        return true;
+                    if (((row - 1) >= 0) && ((row - 1) < length) && (b.tile(col, row - 1)!=null)) {
+                        if (b.tile(col, row - 1).value() == value) {
+                            return true;
+                        }
+                    }
+                    if (((row + 1) >= 0) && ((row + 1) < length) && (b.tile(col, row + 1)!=null)) {
+                        if (b.tile(col, row + 1).value() == value) {
+                            return true;
+                        }
+                    }
+                    if (((col + 1) >= 0) && ((col + 1) < length) && (b.tile(col+1, row )!=null)) {
+                        if (b.tile(col + 1, row).value() == value) {
+                            return true;
+                        }
+                    }
+                    if (((col - 1) >= 0) && ((col - 1) < length) && (b.tile(col-1, row)!=null)) {
+                        if (b.tile(col - 1, row).value() == value) {
+                            return true;
+                        }
                     }
                 }
-                if(((row+1)>=0)&((row+1)<length)){
-                    if(b.tile(col,row+1).value()==value){
-                        return true;
-                    }
-                }
-                if(((col+1)>=0)&((col+1)<length)){
-                    if(b.tile(col+1,row).value()==value){
-                        return true;
-                    }
-                }
-                if(((col-1)>=0)&((col-1)<length)){
-                    if(b.tile(col-1,row).value()==value){
-                        return true;
-                    }
-                }
-
-
             }
         }
         return false;
