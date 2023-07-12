@@ -227,7 +227,7 @@ public class Model extends Observable {
         for(col=0;col<length;col++){
             for(row=0;row<length;row++){
                 if(b.tile(col,row)!=null){
-                    if(b.tile(col,row).value==MAX_PIECE){
+                    if(b.tile(col,row).value()==MAX_PIECE){
                         eq2max=true;
                         return eq2max;
                     }
