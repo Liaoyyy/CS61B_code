@@ -136,7 +136,13 @@ public class LinkedListDeque<T> implements Deque<T>,Iterable<T>{
         test.addLast(3);
         test.addLast(2);
         test.removeFirst();
+        test.removeFirst();
+        test.removeFirst();
         test.removeLast();
+        test.addFirst(1);
+        test.addFirst(2);
+        test.addFirst(3);
+        test.addFirst(4);
         System.out.println(test.get(0));
         System.out.println(test.get(1));
     }

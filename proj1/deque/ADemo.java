@@ -1,7 +1,10 @@
 package deque;
 
+import org.junit.Test;
+
 public class ADemo {
-    public static void main(String[] args){
+    @Test
+    public  void test1(){
         ArrayDeque<String> test=new ArrayDeque<>();
         test.addLast("hello");
         test.addLast("today");
@@ -31,5 +34,31 @@ public class ADemo {
             System.out.println(i);
         }
         //System.out.println(test.equals(test));
+    }
+
+
+    @Test
+    public void test2(){
+        ArrayDeque<Integer> test=new ArrayDeque<>();
+        test.addFirst(1);
+        test.addFirst(5);
+        test.addLast(3);
+        test.addLast(2);
+        test.addFirst(1);
+        test.addFirst(2);
+        test.addFirst(3);
+        test.addFirst(4);
+        test.removeFirst();
+        test.removeFirst();
+        test.removeFirst();
+        test.removeLast();
+        test.addFirst(1);
+        test.addFirst(2);
+        test.addFirst(3);
+        test.addFirst(4);
+        test.addFirst(1);
+        test.addFirst(2);
+        test.addFirst(3);
+        test.addFirst(4);
     }
 }

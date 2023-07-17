@@ -80,10 +80,21 @@ public class ArrayDeque<T> implements Deque<T>,Iterable<T>{
     public T removeFirst(){
         if(isEmpty()) return null;
         T first;
-        first=array[posback];
-        array[posback]=null;
-        size-=1;
-        posback+=1;
+        if(posback!=totallength-1){
+            first=array[posback];
+            array[posback+1]=null;
+            size-=1;
+            posback+=1;
+        }else{
+            first=array[0];
+            posfore-=1;
+            for(int i=0;i<posfore;i++){
+                array[i]=array[i+1];
+            }
+            array[posfore]=null;
+            size-=1;
+        }
+
         if((size<totallength/4) && (totallength>=16)){
             resizing(totallength/4);
         }
@@ -94,10 +105,19 @@ public class ArrayDeque<T> implements Deque<T>,Iterable<T>{
     public T removeLast(){
         if(isEmpty()) return null;
         T last;
-        last=array[posfore];
-        array[posfore]=null;
-        size-=1;
-        posfore-=1;
+        if(posfore!=0){
+            last=array[posfore];
+            array[posfore-1]=null;
+            size-=1;
+            posfore-=1;
+        }else{
+            last=array[totallength-1];
+            posback+=1;
+            for(int i=totallength-1;i>posback;i--){
+                array[i]=array[i-1];
+            }
+            array[posback]=null;
+        }
         if((size<totallength/4) && (totallength>=16)){
             resizing(totallength/4);
         }
