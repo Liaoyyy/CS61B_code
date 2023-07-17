@@ -1,36 +1,29 @@
 package deque;
-
+import static org.junit.Assert.*;
 import org.junit.Test;
 
 public class ADemo {
     @Test
     public  void test1(){
-        ArrayDeque<String> test=new ArrayDeque<>();
-        test.addLast("hello");
-        test.addLast("today");
-        test.addLast("is");
-        test.addLast("Monday");
-        test.addFirst("nice");
-        test.addFirst("Oh");
-        test.printDeque();
+        ArrayDeque<Integer> test=new ArrayDeque<>();
 
-        /*for(int i=0;i<1000;i++){
+
+
+        for(int i=0;i<1000;i++){
             if(i%2 ==0){
                 test.addFirst(i);
             }else{
                 test.addLast(i);
             }
         }
+
         for(int i=0;i<1000;i++){
-            if(i%2 ==0){
-                test.removeFirst();
-            }else{
-                test.removeLast();
+            test.removeFirst();
             }
-        }*/
+
 
         //test.printDeque();
-        for (String i : test) {
+        for (Integer i  :test) {
             System.out.println(i);
         }
         //System.out.println(test.equals(test));
@@ -44,14 +37,19 @@ public class ADemo {
         test.addFirst(5);
         test.addLast(3);
         test.addLast(2);
-        test.addFirst(1);
-        test.addFirst(2);
+        test.addLast(1);
+        test.addLast(2);
         test.addFirst(3);
         test.addFirst(4);
         test.removeFirst();
         test.removeFirst();
         test.removeFirst();
-        test.removeLast();
+        test.removeFirst();
+        test.removeFirst();
+        test.removeFirst();
+        test.removeFirst();
+        test.removeFirst();
+        int k=test.removeFirst();
         test.addFirst(1);
         test.addFirst(2);
         test.addFirst(3);
@@ -60,5 +58,10 @@ public class ADemo {
         test.addFirst(2);
         test.addFirst(3);
         test.addFirst(4);
+    }
+
+    @Test
+    public void test3(){
+
     }
 }

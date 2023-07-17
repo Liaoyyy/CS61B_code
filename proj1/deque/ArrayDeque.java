@@ -81,7 +81,7 @@ public class ArrayDeque<T> implements Deque<T>,Iterable<T>{
         if(isEmpty()) return null;
         T first;
         if(posback!=totallength-1){
-            first=array[posback];
+            first=array[posback+1];
             array[posback+1]=null;
             size-=1;
             posback+=1;
@@ -95,6 +95,7 @@ public class ArrayDeque<T> implements Deque<T>,Iterable<T>{
             size-=1;
         }
 
+        //resize if necessary
         if((size<totallength/4) && (totallength>=16)){
             resizing(totallength/4);
         }
@@ -106,7 +107,7 @@ public class ArrayDeque<T> implements Deque<T>,Iterable<T>{
         if(isEmpty()) return null;
         T last;
         if(posfore!=0){
-            last=array[posfore];
+            last=array[posfore-1];
             array[posfore-1]=null;
             size-=1;
             posfore-=1;
@@ -117,7 +118,10 @@ public class ArrayDeque<T> implements Deque<T>,Iterable<T>{
                 array[i]=array[i-1];
             }
             array[posback]=null;
+            size-=1;
         }
+
+        //resize if necessary
         if((size<totallength/4) && (totallength>=16)){
             resizing(totallength/4);
         }
