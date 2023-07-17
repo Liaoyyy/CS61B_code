@@ -63,6 +63,7 @@ public class LinkedListDeque<T> implements Deque<T>,Iterable<T>{
 
     @Override
     public T removeFirst(){
+        if(isEmpty()) return null;
         T first;
         first=(T) SentinelFront.next.item;
         SentinelFront.next=SentinelFront.next.next;
@@ -73,6 +74,7 @@ public class LinkedListDeque<T> implements Deque<T>,Iterable<T>{
 
     @Override
     public T removeLast(){
+        if(isEmpty()) return null;
         T last;
         last=(T) SentinelBack.prev.item;
         SentinelBack.prev=SentinelBack.prev.prev;

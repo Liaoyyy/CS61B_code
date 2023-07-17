@@ -40,9 +40,8 @@ public class LinkedListDequeTest {
     /** Adds an item, then removes an item, and ensures that dll is empty afterwards. */
     public void addRemoveTest() {
 
-        System.out.println("Make sure to uncomment the lines below (and delete this print statement).");
-        /*
-        LinkedListDeque.java<Integer> lld1 = new LinkedListDeque.java<Integer>();
+
+        LinkedListDeque<Integer> lld1 = new LinkedListDeque<Integer>();
 		// should be empty
 		assertTrue("lld1 should be empty upon initialization", lld1.isEmpty());
 
@@ -53,16 +52,15 @@ public class LinkedListDequeTest {
 		lld1.removeFirst();
 		// should be empty
 		assertTrue("lld1 should be empty after removal", lld1.isEmpty());
-        */
+
     }
 
     @Test
     /* Tests removing from an empty deque */
     public void removeEmptyTest() {
 
-        System.out.println("Make sure to uncomment the lines below (and delete this print statement).");
-        /*
-        LinkedListDeque.java<Integer> lld1 = new LinkedListDeque.java<>();
+
+        LinkedListDeque<Integer> lld1 = new LinkedListDeque<>();
         lld1.addFirst(3);
 
         lld1.removeLast();
@@ -76,17 +74,17 @@ public class LinkedListDequeTest {
         errorMsg += "  actual size() returned 0\n";
 
         assertEquals(errorMsg, 0, size);
-        */
+
     }
 
     @Test
     /* Check if you can create LinkedListDeques with different parameterized types*/
     public void multipleParamTest() {
 
-        /*
-        LinkedListDeque.java<String>  lld1 = new LinkedListDeque.java<String>();
-        LinkedListDeque.java<Double>  lld2 = new LinkedListDeque.java<Double>();
-        LinkedListDeque.java<Boolean> lld3 = new LinkedListDeque.java<Boolean>();
+
+        LinkedListDeque<String>  lld1 = new LinkedListDeque<String>();
+        LinkedListDeque<Double>  lld2 = new LinkedListDeque<Double>();
+        LinkedListDeque<Boolean> lld3 = new LinkedListDeque<Boolean>();
 
         lld1.addFirst("string");
         lld2.addFirst(3.14159);
@@ -95,7 +93,7 @@ public class LinkedListDequeTest {
         String s = lld1.removeFirst();
         double d = lld2.removeFirst();
         boolean b = lld3.removeFirst();
-        */
+
     }
 
     @Test
