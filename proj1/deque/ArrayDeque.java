@@ -78,6 +78,7 @@ public class ArrayDeque<T> implements Deque<T>,Iterable<T>{
 
     @Override
     public T removeFirst(){
+        if(isEmpty()) return null;
         T first;
         first=array[posback];
         array[posback]=null;
@@ -91,6 +92,7 @@ public class ArrayDeque<T> implements Deque<T>,Iterable<T>{
 
     @Override
     public T removeLast(){
+        if(isEmpty()) return null;
         T last;
         last=array[posfore];
         array[posfore]=null;
