@@ -3,9 +3,9 @@ import java.util.Iterator;
 public class ArrayDeque<T> implements Deque<T>,Iterable<T>{
     private int size;
 
-    /*pos records the postion of the first element backward*/
+    /*pos records the position of the first element backward*/
     private int posback;
-    /*pos records the postion of the last element foreward*/
+    /*pos records the position of the last element forward*/
     private int posfore;
     private int totallength;
     private T[] array;

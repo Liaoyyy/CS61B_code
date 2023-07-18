@@ -55,6 +55,19 @@ public class ADemo {
 
     @Test
     public void test3(){
+        ArrayDeque<Integer[]> test=new ArrayDeque<>();
+        Integer[] item=new Integer[]{1,2,3};
+        test.addFirst(item);
+        test.addFirst(item);
+        test.addFirst(item);
+
+        ArrayDeque<Integer[]> test2=new ArrayDeque<>();
+        Integer[] item2=new Integer[]{1,2,3};
+        test2.addFirst(item2);
+        test2.addFirst(item2);
+        test2.addFirst(item2);
+
+        System.out.print(test.equals(test2));
 
     }
 }
