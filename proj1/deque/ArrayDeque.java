@@ -36,7 +36,7 @@ public class ArrayDeque<T> implements Deque<T>,Iterable<T>{
     public void addFirst(T item){
         if(item==null) return;
         if(size==totallength){
-            resizing((int)(size*1.2));
+            resizing((int)(size*2));
         }
         array[posback]=item;
         posback-=1;
@@ -146,9 +146,9 @@ public class ArrayDeque<T> implements Deque<T>,Iterable<T>{
     public boolean equals(Object o){
         if(this==o) return true;
         if(o==null) return false;
-        if(this.getClass()!=o.getClass()) return false;
 
-        ArrayDeque<T> other=(ArrayDeque<T>) o;
+
+        Deque<T> other=(Deque<T>) o;
         if(this.size()!=other.size()) return false;
         for(int i=0;i<size;i++){
             if(this.get(i)!=other.get(i)) return false;
