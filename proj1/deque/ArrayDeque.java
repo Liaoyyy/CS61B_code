@@ -18,7 +18,7 @@ public class ArrayDeque<T> implements Deque<T>,Iterable<T>{
         totallength=8;
     }
 
-    public void resizing(int capacity){
+    private void resizing(int capacity){
         T[] temp=(T[]) new Object[capacity];
         for(int i=0;i<posfore;i++){
             temp[i]=array[i];

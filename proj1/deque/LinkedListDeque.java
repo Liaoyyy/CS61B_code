@@ -104,7 +104,7 @@ public class LinkedListDeque<T> implements Deque<T>,Iterable<T>{
         return result;
     }
 
-    public T Recursive(int index,StuffNode<T> CurPos){
+    private T Recursive(int index,StuffNode<T> CurPos){
         if(index==0) return (T) CurPos.item;
         return (T) Recursive(index-1,CurPos.next);
     }
