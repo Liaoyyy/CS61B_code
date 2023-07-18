@@ -95,11 +95,18 @@ public class LinkedListDeque<T> implements Deque<T>,Iterable<T>{
         return getitem;
     }
 
-    /*public T getRecursive(int index){
-        if(index==0) return
-        return
-    }*/
+    public T getRecursive(int index){
+        if(size==0) return null;
+        if(index>=size || index<0) return null;
+        StuffNode<T> CurPos=SentinelFront.next;
+        T result=Recursive(index,CurPos);
+        return result;
+    }
 
+    public T Recursive(int index,StuffNode<T> CurPos){
+        if(index==0) return (T) CurPos.item;
+        return (T) Recursive(index-1,CurPos.next);
+    }
     public Iterator<T> iterator(){
         return new LinkedListIterator();
     }
@@ -138,21 +145,5 @@ public class LinkedListDeque<T> implements Deque<T>,Iterable<T>{
         }
 
 
-    public static void main(String[] args){
-        LinkedListDeque<Integer> test=new LinkedListDeque<>();
-        test.addFirst(1);
-        test.addFirst(5);
-        test.addLast(3);
-        test.addLast(2);
-        test.removeFirst();
-        test.removeFirst();
-        test.removeFirst();
-        test.removeLast();
-        test.addFirst(1);
-        test.addFirst(2);
-        test.addFirst(3);
-        test.addFirst(4);
-        System.out.println(test.get(0));
-        System.out.println(test.get(1));
-    }
+
 }

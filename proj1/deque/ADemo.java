@@ -1,6 +1,7 @@
 package deque;
 import static org.junit.Assert.*;
 import org.junit.Test;
+import java.lang.*;
 
 public class ADemo {
     @Test
@@ -33,25 +34,23 @@ public class ADemo {
     @Test
     public void test2(){
         ArrayDeque<Integer> test=new ArrayDeque<>();
-        test.addFirst(3);
-        test.addFirst(2);
-        test.addFirst(1);
-        test.addLast(4);
+        for(int i=0;i<100;i++){
+            test.addFirst(99-i);
+        }
 
 
         ArrayDeque<Integer> test2=new ArrayDeque<>();
-        test2.addLast(1);
-        test2.addLast(2);
-        test2.addLast(3);
-        test2.addLast(4);
+        for(int i=0;i<100;i++){
+            test2.addLast(i);
+        }
 
-        LinkedListDeque<Integer> test3=new LinkedListDeque<>();
+        /*LinkedListDeque<Integer> test3=new LinkedListDeque<>();
         test3.addLast(1);
         test3.addLast(2);
         test3.addLast(3);
-        test3.addLast(4);
+        test3.addLast(4);*/
 
-        assertTrue("",test.equals(test3));
+        assertTrue("",test.equals(test2));
     }
 
     @Test

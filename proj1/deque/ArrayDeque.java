@@ -36,7 +36,7 @@ public class ArrayDeque<T> implements Deque<T>,Iterable<T>{
     public void addFirst(T item){
         if(item==null) return;
         if(size==totallength){
-            resizing((int)(size*2));
+            resizing((int)(size*1.5));
         }
         array[posback]=item;
         posback-=1;
@@ -47,7 +47,7 @@ public class ArrayDeque<T> implements Deque<T>,Iterable<T>{
     public void addLast(T item){
         if(item==null) return;
         if(size==totallength){
-            resizing((int)(size*1.2));
+            resizing((int)(size*1.5));
         }
         array[posfore]=item;
         posfore+=1;
@@ -146,7 +146,7 @@ public class ArrayDeque<T> implements Deque<T>,Iterable<T>{
     public boolean equals(Object o){
         if(this==o) return true;
         if(o==null) return false;
-
+        if(!(o instanceof Deque)) return false;
 
         Deque<T> other=(Deque<T>) o;
         if(this.size()!=other.size()) return false;
