@@ -59,6 +59,7 @@ public class LinkedListDeque<T> implements Deque<T>,Iterable<T>{
         }
         sb.append(get(size-1));
         System.out.print(sb.toString());
+        System.out.println();
     }
 
     @Override
@@ -135,6 +136,7 @@ public class LinkedListDeque<T> implements Deque<T>,Iterable<T>{
     public boolean equals(Object o){
         if(this==o) return true;
         if(o==null) return false;
+        if(!(o instanceof Deque)) return false;
 
         Deque<T> other=(Deque<T>)  o;
         if(this.size()!=other.size()) return false;
