@@ -1,6 +1,6 @@
 package deque;
 import java.util.Iterator;
-public class ArrayDeque<T> implements Deque<T>,Iterable<T>{
+public class ArrayDeque<T> implements Deque<T> , Iterable<T> {
     private int size;
 
     /*pos records the position of the first element backward*/
@@ -10,8 +10,8 @@ public class ArrayDeque<T> implements Deque<T>,Iterable<T>{
     private int totallength;
     private T[] array;
 
-    public ArrayDeque(){
-        array=(T[]) new Object[8];
+    public ArrayDeque() {
+        array = (T[]) new Object[8];
         size=0;
         posback=7;
         posfore=0;
