@@ -116,8 +116,8 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
         if (index >= size || index < 0) {
             return null;
         }
-        StuffNode<T> CurPos = sentinelFront.next;
-        T result = recursive(index, CurPos);
+        StuffNode<T> curPos = sentinelFront.next;
+        T result = recursive(index, curPos);
         return result;
     }
 
