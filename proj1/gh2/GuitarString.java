@@ -1,6 +1,6 @@
 package gh2;
- import deque.ArrayDeque;
- import deque.Deque;
+import deque.ArrayDeque;
+import deque.Deque;
 
 //Note: This file will not compile until you complete the Deque implementations
 public class GuitarString {
@@ -17,8 +17,8 @@ public class GuitarString {
     public GuitarString(double frequency) {
         buffer = new ArrayDeque<>();
         double c = SR / frequency;
-        int length= (int) Math.round(c);
-        for (int i = 0; i<length; i++) {
+        int length = (int) Math.round(c);
+        for (int i = 0; i < length; i++) {
             buffer.addFirst(0.0);
         }
 
@@ -28,11 +28,6 @@ public class GuitarString {
 
     /* Pluck the guitar string by replacing the buffer with white noise. */
     public void pluck() {
-        //       Make sure that your random numbers are different from each
-        //       other. This does not mean that you need to check that the numbers
-        //       are different from each other. It means you should repeatedly call
-        //       Math.random() - 0.5 to generate new random numbers for each array index.
-
         for (int i = 0; i < buffer.size(); i++) {
             double temp = buffer.get(0);
             temp +=  Math.random() - 0.5;
