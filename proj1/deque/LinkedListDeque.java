@@ -9,16 +9,16 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
         private T item;
         private StuffNode next;
         private StuffNode prev;
-        StuffNode(T i, StuffNode n_next, StuffNode n_prev) {
+        StuffNode(T i, StuffNode nodeNext, StuffNode nodePrev) {
             item = i;
-            next = n_next;
-            prev = n_prev;
+            next = nodeNext;
+            prev = nodePrev;
         }
     }
 
     public LinkedListDeque() {
-        sentinelFront = new StuffNode(null,null, null);
-        sentinelBack = new StuffNode(null,null, sentinelFront);
+        sentinelFront = new StuffNode(null, null, null);
+        sentinelBack = new StuffNode(null, null, sentinelFront);
         sentinelFront.next = sentinelBack;
         size = 0;
     }
@@ -132,14 +132,14 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
     }
 
     private class LinkedListIterator implements Iterator<T> {
-        private int Curpos;
+        private int curPos;
 
         LinkedListIterator()  {
-            Curpos = 0;
+            curPos = 0;
         }
         @Override
         public boolean hasNext() {
-            if (get(Curpos) != null) {
+            if (get(curPos) != null) {
                 return true;
             }
             return false;
@@ -148,8 +148,8 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
         @Override
         public T next() {
             T temp;
-            temp = get(Curpos);
-            Curpos += 1;
+            temp = get(curPos);
+            curPos += 1;
             return temp;
         }
 
@@ -171,11 +171,11 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
         if (this.size() != other.size()) {
             return false;
         }
-        for (int i = 0;i < size; i++) {
+        for (int i = 0; i < size; i++) {
             if (this.get(i) != other.get(i)) {
                 return false;
             }
         }
         return true;
-        }
+    }
 }

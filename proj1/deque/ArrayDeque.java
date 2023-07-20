@@ -141,8 +141,8 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
     @Override
     public T get(int index) {
         if ((index >= 0) && (index < totallength - posback - 1)) {
-            return array[index+posback + 1];
-        } else if ((index >= totallength-posback-1) && (index < size)) {
+            return array[index + posback + 1];
+        } else if ((index >= totallength - posback - 1) && (index < size)) {
             return array[index - (totallength - posback - 1)];
         }
         return null;
