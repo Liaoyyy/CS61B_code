@@ -6,10 +6,10 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
     private StuffNode SentinelBack;
 
     private class StuffNode<T> {
-        public T item;
-        public StuffNode next;
-        public StuffNode prev;
-        public StuffNode(T i, StuffNode N_next, StuffNode N_prev){
+        private T item;
+        private StuffNode next;
+        private StuffNode prev;
+        StuffNode(T i, StuffNode N_next, StuffNode N_prev) {
             item = i;
             next = N_next;
             prev = N_prev;
@@ -17,30 +17,30 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
     }
 
     public LinkedListDeque() {
-        SentinelFront = new StuffNode(null,null,null);
-        SentinelBack = new StuffNode(null,null,SentinelFront);
+        SentinelFront = new StuffNode(null,null, null);
+        SentinelBack = new StuffNode(null,null, SentinelFront);
         SentinelFront.next = SentinelBack;
-        size=0;
+        size = 0;
     }
 
     @Override
     public void addFirst(T item) {
-        if(item == null) {
+        if (item == null) {
             return;
         }
         StuffNode temp = SentinelFront.next;
-        SentinelFront.next = new StuffNode(item,temp,SentinelFront);
+        SentinelFront.next = new StuffNode(item, temp, SentinelFront);
         temp.prev = SentinelFront.next;
         size += 1;
     }
 
     @Override
-    public void addLast(T item){
-        if (item==null) {
+    public void addLast(T item) {
+        if (item == null) {
             return;
         }
         StuffNode temp = SentinelBack.prev;
-        SentinelBack.prev = new StuffNode(item,SentinelBack,temp);
+        SentinelBack.prev = new StuffNode(item, SentinelBack, temp);
         temp.next = SentinelBack.prev;
         size += 1;
 
@@ -49,7 +49,7 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
     @Override
     public boolean isEmpty() {
 
-        return size==0;
+        return size == 0;
     }
 
     @Override
@@ -60,7 +60,7 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
     @Override
     public void printDeque() {
         StringBuilder sb = new StringBuilder();
-        for(int i = 0; i < size - 1; i++) {
+        for (int i = 0; i < size - 1; i++) {
             sb.append(get(i));
             sb.append(" ");
         }
@@ -77,14 +77,16 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
         T first;
         first = (T) SentinelFront.next.item;
         SentinelFront.next = SentinelFront.next.next;
-        SentinelFront.next.prev=SentinelFront;
+        SentinelFront.next.prev = SentinelFront;
         size -= 1;
         return first;
     }
 
     @Override
     public T removeLast() {
-        if (isEmpty()) return null;
+        if (isEmpty()) {
+            return null;
+        }
         T last;
         last = (T) SentinelBack.prev.item;
         SentinelBack.prev = SentinelBack.prev.prev;
@@ -123,20 +125,21 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
         if (index == 0) {
             return (T) CurPos.item;
         }
-        return (T) Recursive(index-1, CurPos.next);
+        return (T) Recursive(index - 1, CurPos.next);
     }
     public Iterator<T> iterator() {
         return new LinkedListIterator();
     }
 
     private class LinkedListIterator implements Iterator<T> {
-        private int CurPos;
+        private int Curpos;
 
-        public LinkedListIterator()  {
-            CurPos=0;}
+        LinkedListIterator()  {
+            Curpos = 0;
+        }
         @Override
         public boolean hasNext() {
-            if (get(CurPos) != null) {
+            if (get(Curpos) != null) {
                 return true;
             }
             return false;
@@ -145,8 +148,8 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
         @Override
         public T next() {
             T temp;
-            temp = get(CurPos);
-            CurPos += 1;
+            temp = get(Curpos);
+            Curpos += 1;
             return temp;
         }
 

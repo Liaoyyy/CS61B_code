@@ -37,8 +37,8 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
         if (item == null) {
             return;
         }
-        if (size == totallength){
-            resizing((int)(size * 1.5));
+        if (size == totallength) {
+            resizing((int) (size * 1.5));
         }
         array[posback] = item;
         posback -= 1;
@@ -51,7 +51,7 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
             return;
         }
         if (size == totallength) {
-            resizing((int)(size * 1.5));
+            resizing((int) (size * 1.5));
         }
         array[posfore] = item;
         posfore += 1;
@@ -71,11 +71,11 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
     @Override
     public void printDeque() {
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < size-1; i++) {
+        for (int i = 0; i < size - 1; i++) {
             sb.append(get(i));
             sb.append(' ');
         }
-        sb.append(get(size-1));
+        sb.append(get(size - 1));
         System.out.println(sb.toString());
         System.out.println();
 
@@ -88,24 +88,25 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
             return null;
         }
         T first;
-        if (posback != totallength-1) {
-            first = array[posback+1];
-            array[posback+1] = null;
+        if (posback != totallength - 1) {
+            first = array[posback + 1];
+            array[posback + 1] = null;
             size -= 1;
             posback += 1;
-        }else {
+        }
+        else {
             first = array[0];
             posfore -= 1;
-            for(int i = 0; i < posfore; i++) {
-                array[i] = array[i+1];
+            for (int i = 0; i < posfore; i++) {
+                array[i] = array[i + 1];
             }
             array[posfore] = null;
             size -= 1;
         }
 
         //resize if necessary
-        if ((size < totallength/4) && (totallength >= 16)) {
-            resizing(totallength/4);
+        if ((size < totallength / 4) && (totallength >= 16)) {
+            resizing(totallength / 4);
         }
         return first;
     }
@@ -121,10 +122,11 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
             array[posfore - 1] = null;
             size -= 1;
             posfore -= 1;
-        }else {
+        }
+        else {
             last = array[totallength-1];
             posback += 1;
-            for(int i = totallength - 1; i > posback; i--) {
+            for (int i = totallength - 1; i > posback; i--) {
                 array[i] = array[i - 1];
             }
             array[posback] = null;
@@ -142,8 +144,9 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
     public T get(int index) {
         if ((index >= 0) && (index < totallength - posback - 1)) {
             return array[index+posback + 1];
-        }else if ((index>=totallength-posback-1) && (index<size)){
-            return array[index-(totallength-posback-1)];
+        }
+        else if ((index >= totallength-posback-1) && (index < size)) {
+            return array[index - (totallength-posback - 1)];
         }
         return null;
     }
@@ -154,10 +157,10 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
 
     @Override
     public boolean equals(Object o) {
-        if (this==o) {
+        if (this == o) {
             return true;
         }
-        if (o==null) {
+        if (o == null) {
             return false;
         }
         if (!(o instanceof Deque)) {
@@ -168,7 +171,7 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
         if (this.size() != other.size()) {
             return false;
         }
-        for (int i = 0; i < size; i++){
+        for (int i = 0; i < size; i++) {
             if (this.get(i) != other.get(i)) {
                 return false;
             }
@@ -179,7 +182,7 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
 
     private class ArrayIterator implements Iterator<T> {
         private int CurPos;
-        public ArrayIterator(){
+        ArrayIterator(){
             CurPos=0;
         }
         @Override
