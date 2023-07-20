@@ -93,8 +93,7 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
             array[posback + 1] = null;
             size -= 1;
             posback += 1;
-        }
-        else {
+        } else {
             first = array[0];
             posfore -= 1;
             for (int i = 0; i < posfore; i++) {
@@ -122,9 +121,8 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
             array[posfore - 1] = null;
             size -= 1;
             posfore -= 1;
-        }
-        else {
-            last = array[totallength-1];
+        } else {
+            last = array[totallength - 1];
             posback += 1;
             for (int i = totallength - 1; i > posback; i--) {
                 array[i] = array[i - 1];
@@ -134,8 +132,8 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
         }
 
         //resize if necessary
-        if ((size < totallength/4) && (totallength >= 16)) {
-            resizing(totallength/4);
+        if ((size < totallength / 4) && (totallength >= 16)) {
+            resizing(totallength / 4);
         }
         return last;
     }
@@ -144,9 +142,8 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
     public T get(int index) {
         if ((index >= 0) && (index < totallength - posback - 1)) {
             return array[index+posback + 1];
-        }
-        else if ((index >= totallength-posback-1) && (index < size)) {
-            return array[index - (totallength-posback - 1)];
+        } else if ((index >= totallength-posback-1) && (index < size)) {
+            return array[index - (totallength - posback - 1)];
         }
         return null;
     }
@@ -181,13 +178,13 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
 
 
     private class ArrayIterator implements Iterator<T> {
-        private int CurPos;
-        ArrayIterator(){
-            CurPos=0;
+        private int curPos;
+        ArrayIterator() {
+            curPos = 0;
         }
         @Override
-        public boolean hasNext(){
-            if (get(CurPos) != null) {
+        public boolean hasNext() {
+            if (get(curPos) != null) {
                 return true;
             }
             return false;
@@ -195,8 +192,8 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
 
         @Override
         public T next() {
-            T returnItem = get(CurPos);
-            CurPos += 1;
+            T returnItem = get(curPos);
+            curPos += 1;
             return returnItem;
         }
     }
