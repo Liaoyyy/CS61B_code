@@ -3,7 +3,7 @@ package capers;
 import java.io.File;
 import java.io.IOException;
 
-import static capers.Dog.DOG_FOLDER;
+import static capers.Dog.*;
 import static capers.Utils.*;
 
 /** A repository for Capers 
@@ -52,7 +52,6 @@ public class CapersRepository {
      */
     public static void writeStory(String text) {
         String content = readContentsAsString(story);
-        System.out.println(content);
         content=content.concat(text);
         System.out.println(content);
         writeContents(story,content+"\n");
@@ -66,9 +65,9 @@ public class CapersRepository {
      * Also prints out the dog's information using toString().
      */
     public static void makeDog(String name, String breed, int age) {
-        Dog new_dog = new Dog(name, breed, age);
-
-
+        Dog newDog = new Dog(name, breed, age);
+        newDog.saveDog();
+        System.out.println(newDog.toString());
     }
 
     /**
@@ -78,6 +77,8 @@ public class CapersRepository {
      * @param name String name of the Dog whose birthday we're celebrating.
      */
     public static void celebrateBirthday(String name) {
-        // TODO
+        Dog thisDog = fromFile(name);
+        thisDog.haveBirthday();
+        thisDog.saveDog();
     }
 }

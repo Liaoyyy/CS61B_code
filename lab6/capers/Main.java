@@ -44,7 +44,6 @@ public class Main {
         }
 
         if (!CAPERS_FOLDER.exists()){
-            System.out.println("create a new folder");
             CapersRepository.setupPersistence();
         }
 
