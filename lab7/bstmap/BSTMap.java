@@ -111,9 +111,30 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
 
     }
 
+    /** print BSTMap in the order of increasing Key
+     * there is a bug in this method now
+     * waiting for modify*/
 
+    public void printInOrder(){
+        printInOrder(root);
+    }
+    private void printInOrder(BSTNode BN) {
+        if (BN == null) {
+            return;
+        }
 
+        if (BN.left == null) {
+            System.out.println(BN.key.toString()+":"+BN.value.toString());
+        } else {
+            printInOrder(BN.left);
+        }
 
+        if (BN.right == null) {
+            System.out.println(BN.key.toString()+":"+BN.value.toString());
+        } else {
+            printInOrder(BN.right);
+        }
+    }
 
 
     /** Returns a Set view of the keys contained in this map. Not required for Lab 7.
@@ -141,7 +162,19 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
     }
 
     @Override
-    public Iterator iterator( ){
-        return null;
+    public Iterator<K> iterator( ){
+        return new BSTIterator();
+    }
+
+    private class BSTIterator implements Iterator<K> {
+        @Override
+        public boolean hasNext() {
+            return false;
+        }
+
+        @Override
+        public K next() {
+            return null;
+        }
     }
 }
