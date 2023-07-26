@@ -30,19 +30,44 @@ public class Repository {
     public static final File COMMITS_DIR = join(GITLET_DIR, "GITLET_DIR");
     /** The bolbs directory. */
     public static final File BOLBS_DIR = join(GITLET_DIR, "GITLET_DIR");
+    /** The stage area. */
+    public static final File STAGING = join(GITLET_DIR, "STAGEING");
+    /** The area for addition */
+    public static final File ADDITION = join(STAGING, "ADDITION");
+    /** The area for addition */
+    public static final File REMOVAL = join(STAGING, "REMOVAL");
+
+
+
+
     /** Records the num of commits in the commits directory */
     public static final File numOfCommits = new File(COMMITS_DIR, "numOfCommits.txt");
+    /** Records the num of bolbs in the staging area */
+    public static final File numOfBolbs = new File(COMMITS_DIR, "numOfBolbs.txt");
 
     /**Create a gitlet repository */
     public static void setupPersistence() {
         GITLET_DIR.mkdir();
         COMMITS_DIR.mkdir();
         BOLBS_DIR.mkdir();
+        STAGING.mkdir();
+        ADDITION.mkdir();
+        REMOVAL.mkdir();
         try {
             numOfCommits.createNewFile();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
         writeContents(numOfCommits, 0);
+    }
+
+    public static File createFile(File path, String filename) {
+        File newFile = new File(path, filename);
+        try {
+            newFile.createNewFile();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return newFile;
     }
 }

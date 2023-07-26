@@ -1,11 +1,9 @@
 package gitlet;
 
-// TODO: any imports you need here
-
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.Date; // TODO: You'll likely use this in this class
+import java.util.Date;
 
 import static gitlet.Utils.*;
 import static gitlet.Repository.*;
@@ -14,7 +12,7 @@ import static gitlet.Repository.*;
  *  TODO: It's a good idea to give a description here of what else this Class
  *  does at a high level.
  *
- *  @author TODO
+ *  @author
  */
 public class Commit implements Serializable {
     /**

@@ -7,8 +7,6 @@ import static gitlet.Repository.*;
 import static gitlet.Utils.*;
 
 public class Commands {
-    private static final File CWD = new File(System.getProperty("user.dir"));
-
 
     /**Initialize the gitlet directory */
     public static void init() throws IOException {
@@ -19,8 +17,7 @@ public class Commands {
         //create relevant files
         setupPersistence();
         Commit init = new Commit("initial commit",null);
-        File Master = new File(COMMITS_DIR, "Master.txt");
-        Master.createNewFile();
+        File Master = createFile(COMMITS_DIR, "master.txt");
         writeObject(Master, init);
     }
 
