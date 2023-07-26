@@ -1,6 +1,8 @@
 package gitlet;
 
 import java.io.File;
+import java.io.IOException;
+
 import static gitlet.Utils.*;
 
 // TODO: any imports you need here
@@ -24,8 +26,23 @@ public class Repository {
     public static final File CWD = new File(System.getProperty("user.dir"));
     /** The .gitlet directory. */
     public static final File GITLET_DIR = join(CWD, ".gitlet");
+    /** The commits directory. */
+    public static final File COMMITS_DIR = join(GITLET_DIR, "GITLET_DIR");
+    /** The bolbs directory. */
+    public static final File BOLBS_DIR = join(GITLET_DIR, "GITLET_DIR");
+    /** Records the num of commits in the commits directory */
+    public static final File numOfCommits = new File(COMMITS_DIR, "numOfCommits.txt");
 
+    /**Create a gitlet repository */
     public static void setupPersistence() {
         GITLET_DIR.mkdir();
+        COMMITS_DIR.mkdir();
+        BOLBS_DIR.mkdir();
+        try {
+            numOfCommits.createNewFile();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        writeContents(numOfCommits, 0);
     }
 }

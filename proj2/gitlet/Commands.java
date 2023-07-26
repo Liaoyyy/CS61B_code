@@ -18,23 +18,11 @@ public class Commands {
         }
         //create relevant files
         setupPersistence();
-
-
-        File property = new File(gitDir, "property.txt");
-        File masterProperty = new File(gitDir, "masterProperty.txt");
-        property.createNewFile();
-        masterProperty.createNewFile();
-
-        Commit init = new Commit();
-        Commit master = init;
-        writeObject(property, init);
-        writeObject(masterProperty, master);
+        Commit init = new Commit("initial commit",null);
+        File Master = new File(COMMITS_DIR, "Master.txt");
+        Master.createNewFile();
+        writeObject(Master, init);
     }
-
-
-
-
-
 
     public static void add() {
 
