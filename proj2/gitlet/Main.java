@@ -1,5 +1,7 @@
 package gitlet;
 
+
+import static gitlet.Utils.*;
 /** Driver class for Gitlet, a subset of the Git version-control system.
  *  @author TODO
  */
@@ -9,7 +11,11 @@ public class Main {
      *  <COMMAND> <OPERAND1> <OPERAND2> ... 
      */
     public static void main(String[] args) {
-        // TODO: what if args is empty?
+    if (args.length == 0){
+        System.out.println("Please enter a command");
+        System.exit(-1);
+    }
+
         String firstArg = args[0];
         switch(firstArg) {
             case "init":
