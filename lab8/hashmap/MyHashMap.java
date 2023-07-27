@@ -34,7 +34,7 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
     private int size;
     private double loadFactor;
     private int num;//records the num of item in the buckets
-    public HashSet<K> keyset;
+    private HashSet<K> keyset;
     // You should probably define some more!
 
     /** Constructors */
