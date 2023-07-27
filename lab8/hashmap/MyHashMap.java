@@ -34,7 +34,7 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
     private int size;
     private double loadFactor;
     private int num;//records the num of item in the buckets
-    private HashSet<K> keyset;
+    public HashSet<K> keyset;
     // You should probably define some more!
 
     /** Constructors */
@@ -184,6 +184,20 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
             num += 1;
         }
 
+        if (num / size >= loadFactor) {
+            buckets = resize(size * 2);
+        }
+    }
+
+    /**Resize the hashmap */
+    private Collection<Node>[] resize(int new_size) {
+        MyHashMap<K,V> newHashMap = new MyHashMap<>(new_size,loadFactor);
+        for (K key: keyset) {
+            V value = get(key);
+            newHashMap.put(key, value);
+        }
+        size *= 2;
+        return newHashMap.buckets;
     }
 
     /** Returns a Set view of the keys contained in this map. */
@@ -198,8 +212,17 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
      * UnsupportedOperationException.
      */
     @Override
-    public V remove(K key) throws UnsupportedOperationException{
-        return null;
+    public V remove(K key){
+        if (num == 0) return null;
+        Node result = null;
+        int index = Math.floorMod(key.hashCode(), size);
+        for (Node i: buckets[index]) {
+            if (key.equals(i.key)) {
+                result = i;
+                buckets[index].remove(i);
+            }
+        }
+        return result.value;
     }
 
     /**
@@ -208,8 +231,17 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
      * throw an UnsupportedOperationException.
      */
     @Override
-    public V remove(K key, V value) throws UnsupportedOperationException {
-        return null;
+    public V remove(K key, V value){
+        if (num == 0) return null;
+        Node result = null;
+        int index = Math.floorMod(key.hashCode(), size);
+        for (Node i: buckets[index]) {
+            if (key.equals(i.key)) {
+                result = i;
+                buckets[index].remove(i);
+            }
+        }
+        return result.value;
     }
 
     @Override
