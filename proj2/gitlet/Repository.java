@@ -55,10 +55,12 @@ public class Repository {
         REMOVAL.mkdir();
         try {
             numOfCommits.createNewFile();
+            numOfBolbs.createNewFile();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
         writeContents(numOfCommits, "0");
+        writeContents(numOfBolbs,"0");
     }
 
     public static File createFile(File path, String filename) {
