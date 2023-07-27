@@ -10,7 +10,7 @@ import static gitlet.Utils.*;
 import static gitlet.Repository.*;
 
 /** Represents a gitlet commit object.
- *  TODO: It's a good idea to give a description here of what else this Class
+ *
  *  does at a high level.
  *
  *  @author
@@ -29,16 +29,18 @@ public class Commit implements Serializable {
     /** Record the parent reference of current commit*/
     public Commit parent;
     /** Record the date of this Commit*/
-    public Date date;
+    private Date date;
     /** Record the index of this Commit*/
     private String ind;
     /** Record the information of bolbs in the hashmap*/
-    private HashMap<String,Integer> hashmap;
+    private HashMap<String,String> hashmap;
 
 
     public Commit( String message, Commit parent) throws IOException {
         this.message = message;
         this.parent = parent;
+
+        //read the index of this Commit
         ind = readContentsAsString(numOfCommits);
         Integer index=Integer.parseInt(ind)+1;
         writeContents(numOfCommits,index.toString());
@@ -48,8 +50,10 @@ public class Commit implements Serializable {
         commit.createNewFile();
         if (ind.equals("0")) {
             date = new Date(0);
+            hashmap = null;
         } else {
             date = new Date();
+            hashmap = new HashMap<>();
         }
 
         writeObject(commit,this);
@@ -58,11 +62,19 @@ public class Commit implements Serializable {
         writeObject(commit, this);
     }
 
+    /**Add Blob to the hashmap */
+    public void addBlob(String filename, String SHA1) {
+        hashmap.put(SHA1,filename);
+    }
 
+    /**Check whether contains the Blob in current hashmap */
+    public boolean checkBlob(String SHA1) {
+        if (hashmap == null) return false;
+        return hashmap.containsKey(SHA1);
+    }
 
     /**Save the object in the specific file */
     public void saveCommit(File file) {
-
         writeObject(file,this);
     }
 

@@ -23,7 +23,7 @@ public class Main {
         String cmd = args[0];
         switch(cmd) {
             case "init":
-                validateNumArgs(cmd, args, 1);
+                validateNumArgs(args, 1);
                 try {
                     Commands.init();
                 } catch (IOException e) {
@@ -31,10 +31,17 @@ public class Main {
                 }
                 break;
             case "add":
-                validateNumArgs(cmd, args, 2);
-                add();
+                validateNumArgs(args, 2);
+                String filename = args[1];
+                add(filename);
                 break;
             case "commit":
+                if (args.length != 2) {
+                    System.out.println("Please enter a commit message.");
+                }
+                String message = args[1];
+                commit(message);
+
 
             default:
                 System.out.println("No command with that name exists.");
@@ -43,7 +50,7 @@ public class Main {
     }
 
     /**Check whether the number of args is valid */
-    public static void validateNumArgs(String cmd, String[] args, int n) {
+    public static void validateNumArgs( String[] args, int n) {
         if (args.length != n) {
             throw new RuntimeException(
                     String.format("Incorrect operands"));

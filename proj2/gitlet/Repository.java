@@ -63,8 +63,12 @@ public class Repository {
         writeContents(numOfBolbs,"0");
     }
 
+    /**Create a file named 'filename' in the specific 'path' */
     public static File createFile(File path, String filename) {
         File newFile = new File(path, filename);
+        if (newFile.exists()) {
+            newFile.delete();
+        }
         try {
             newFile.createNewFile();
         } catch (IOException e) {
@@ -72,4 +76,34 @@ public class Repository {
         }
         return newFile;
     }
+
+    /**Remove a file named 'filename' from the specific 'path'*/
+    public static void removeFile(File path, String filename) {
+        File f = new File(path, filename);
+        f.delete();
+    }
+
+    /**Check whether the file is existed in the 'path' */
+    public static boolean checkFile(File path, String filename) {
+        File f =new File(path, filename);
+        return f.exists();
+    }
+
+    /**Get String SHA1 of the file in 'path' */
+    public static String getSHA1(File path, String filename) {
+        File f = new File(path, filename);
+        String contents = readContentsAsString(f);
+        writeContents(f, contents);
+        return sha1(contents);
+    }
+
+    /** Copy the file name 'filename' from the working space to direc 'ADDITION' */
+    public static void copyFiletoAdd(String filename) {
+        File f = new File(CWD, filename);
+        File copy = createFile(ADDITION, filename);
+        String content = readContentsAsString(f);
+        writeContents(f, content);
+        writeContents(copy, content);
+    }
+
 }
