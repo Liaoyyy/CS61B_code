@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashMap;
 
 import static gitlet.Utils.*;
 import static gitlet.Repository.*;
@@ -32,7 +33,7 @@ public class Commit implements Serializable {
     /** Record the index of this Commit*/
     private String ind;
     /** Record the information of bolbs in the hashmap*/
-    private hashing hashmap;
+    private HashMap<String,Integer> hashmap;
 
 
     public Commit( String message, Commit parent) throws IOException {
@@ -47,10 +48,8 @@ public class Commit implements Serializable {
         commit.createNewFile();
         if (ind.equals("0")) {
             date = new Date(0);
-            hashmap = null;
         } else {
             date = new Date();
-            hashmap = new hashing();
         }
 
         writeObject(commit,this);
