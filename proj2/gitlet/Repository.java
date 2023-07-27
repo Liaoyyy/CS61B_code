@@ -29,7 +29,7 @@ public class Repository {
     /** The commits directory. */
     public static final File COMMITS_DIR = join(GITLET_DIR, "GITLET_DIR");
     /** The bolbs directory. */
-    public static final File BOLBS_DIR = join(GITLET_DIR, "GITLET_DIR");
+    public static final File BOLBS_DIR = join(GITLET_DIR, "BOLBS_DIR");
     /** The stage area. */
     public static final File STAGING = join(GITLET_DIR, "STAGEING");
     /** The area for addition */
