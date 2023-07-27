@@ -32,15 +32,26 @@ public class Main {
                 break;
             case "add":
                 validateNumArgs(args, 2);
-                String filename = args[1];
-                add(filename);
+                String filename1 = args[1];
+                add(filename1);
                 break;
             case "commit":
                 if (args.length != 2) {
                     System.out.println("Please enter a commit message.");
+                    System.exit(-1);
                 }
                 String message = args[1];
-                commit(message);
+                try {
+                    commit(message);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                break;
+            case "rm":
+                validateNumArgs(args, 2);
+                String filename2 = args[1];
+                rm(filename2);
+                break;
 
 
             default:

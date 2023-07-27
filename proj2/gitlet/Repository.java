@@ -2,6 +2,7 @@ package gitlet;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import static gitlet.Utils.*;
 
@@ -43,7 +44,7 @@ public class Repository {
     /** Records the num of commits in the commits directory */
     public static final File numOfCommits = new File(COMMITS_DIR, "numOfCommits.txt");
     /** Records the num of bolbs in the staging area */
-    public static final File numOfBolbs = new File(COMMITS_DIR, "numOfBolbs.txt");
+    public static final File numOfBolbs = new File(BOLBS_DIR, "numOfBolbs.txt");
 
     /**Create a gitlet repository */
     public static void setupPersistence() {
@@ -59,6 +60,7 @@ public class Repository {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
         writeContents(numOfCommits, "0");
         writeContents(numOfBolbs,"0");
     }
@@ -84,9 +86,9 @@ public class Repository {
     }
 
     /**Check whether the file is existed in the 'path' */
-    public static boolean checkFile(File path, String filename) {
-        File f =new File(path, filename);
-        return f.exists();
+    public static boolean checkFile(File dir, String filename) {
+        List<String> list = plainFilenamesIn(dir);
+        return list.contains(filename);
     }
 
     /**Get String SHA1 of the file in 'path' */
@@ -101,6 +103,15 @@ public class Repository {
     public static void copyFiletoAdd(String filename) {
         File f = new File(CWD, filename);
         File copy = createFile(ADDITION, filename);
+        String content = readContentsAsString(f);
+        writeContents(f, content);
+        writeContents(copy, content);
+    }
+
+    /** Copy the file name 'filename' from the working space to direc 'REMOVAL' */
+    public static void copyFiletoRem(String filename) {
+        File f = new File(CWD, filename);
+        File copy = createFile(REMOVAL, filename);
         String content = readContentsAsString(f);
         writeContents(f, content);
         writeContents(copy, content);

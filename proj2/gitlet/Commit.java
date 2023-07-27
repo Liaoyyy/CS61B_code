@@ -32,7 +32,9 @@ public class Commit implements Serializable {
     private Date date;
     /** Record the index of this Commit*/
     private String ind;
-    /** Record the information of bolbs in the hashmap*/
+    /** Record the information of bolbs in the hashmap
+     * for each node, key is the filename  and  value is the SHA1 of the file
+     * */
     private HashMap<String,String> hashmap;
 
 
@@ -53,7 +55,11 @@ public class Commit implements Serializable {
             hashmap = null;
         } else {
             date = new Date();
-            hashmap = new HashMap<>();
+            if (parent.hashmap() != null) {
+                hashmap = parent.hashmap();
+            } else {
+                hashmap = new HashMap<>();
+            }
         }
 
         writeObject(commit,this);
@@ -64,14 +70,24 @@ public class Commit implements Serializable {
 
     /**Add Blob to the hashmap */
     public void addBlob(String filename, String SHA1) {
-        hashmap.put(SHA1,filename);
+        hashmap.put(filename,SHA1);
     }
 
-    /**Check whether contains the Blob in current hashmap */
-    public boolean checkBlob(String SHA1) {
-        if (hashmap == null) return false;
-        return hashmap.containsKey(SHA1);
+    /**Remove Blob from the hashmap */
+    public void rmBlob(String filename) {
+        hashmap.remove(filename);
     }
+
+
+    /**Check whether contains the Blob in current hashmap. if contains ,return true*/
+    public boolean checkBlob(String filename, String SHA1) {
+        if (hashmap == null) return false;
+        if (!hashmap.containsKey(filename)) return false;
+        return SHA1.equals(hashmap.get(filename));
+    }
+
+    /**Return hashmap */
+    public HashMap<String, String> hashmap() {return this.hashmap;}
 
     /**Save the object in the specific file */
     public void saveCommit(File file) {

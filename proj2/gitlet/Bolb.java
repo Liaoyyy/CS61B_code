@@ -19,7 +19,7 @@ public class Bolb implements Serializable{
         //read the index of this Bolb
         ind = readContentsAsString(numOfBolbs);
         Integer index=Integer.parseInt(ind)+1;
-        writeContents(numOfCommits,index.toString());
+        writeContents(numOfBolbs,index.toString());
 
         blobname = "Blob" + ind + ".txt";
         File bolb = createFile(BOLBS_DIR, blobname);
@@ -27,6 +27,9 @@ public class Bolb implements Serializable{
         sha1 = sha1(contents);
         writeObject(bolb, this);
     }
+
+    /**Return the SHA1 of this Bolb file */
+    public String getSHA1() {return sha1;}
 
 
 }
