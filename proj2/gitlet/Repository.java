@@ -58,7 +58,7 @@ public class Repository {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        writeContents(numOfCommits, 0);
+        writeContents(numOfCommits, "0");
     }
 
     public static File createFile(File path, String filename) {

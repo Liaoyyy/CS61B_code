@@ -38,7 +38,7 @@ public class Commit implements Serializable {
         this.parent = parent;
         ind = readContentsAsString(numOfCommits);
         Integer index=Integer.parseInt(ind)+1;
-        writeContents(numOfCommits,index);
+        writeContents(numOfCommits,index.toString());
 
         String filename = "commit" + ind +".txt";
         File commit = new File(COMMITS_DIR, filename);
