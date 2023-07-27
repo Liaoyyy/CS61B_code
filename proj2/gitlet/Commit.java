@@ -55,6 +55,33 @@ public class Commit implements Serializable {
         writeObject(commit, this);
     }
 
+    /**Create a private resizeable hashing map */
+    private class hashing {
+        public String[] hashlist;
+        private int size;
+        private int num;
+        /** create a hashing list*/
+        public hashing() {
+            hashlist = new String[4];
+            size = 4;
+            num = 0;
+            for (int i = 0; i<size ; i++) {
+                hashlist[i] = null;
+            }
+        }
+
+        /**insert a specific hashcode into hashlist */
+        public void add(String SHA1) {
+            int index = SHA1.hashCode() % size;
+            if (hashlist[index] == null) {
+                hashlist[index] = SHA1;
+            }
+            num ++;
+        }
+
+        /** Resize the hashlist if num/size >= 1.5 */
+
+    }
     /**Save the object in the specific file */
     public void saveCommit(File file) {
 

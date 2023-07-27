@@ -3,12 +3,12 @@ package gitlet;
 import java.io.File;
 import static gitlet.Repository.*;
 
-public class HashingBolb {
+public class Bolb {
 
 
 
     /**Create a new bolb */
-    public HashingBolb(String SHA) {
+    public Bolb(String SHA) {
         File bolb = createFile(BOLBS_DIR, "bolb.txt");
     }
 
