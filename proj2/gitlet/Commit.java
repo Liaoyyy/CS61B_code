@@ -32,6 +32,8 @@ public class Commit implements Serializable {
     private String ind;
     /** Record the commit name */
     private String commitname;
+    /** Record the merge information inside */
+    private String merge;
     /** Record the information of bolbs in the hashmap
      * for each node, key is the filename  and  value is the SHA1 of the file
      * */
@@ -40,6 +42,7 @@ public class Commit implements Serializable {
 
     public Commit(String message, String parentfilename) throws IOException {
         this.message = message;
+        this.merge = null;
 
         if (parentfilename.equals("null")) {
             this.parent = null;
@@ -50,7 +53,7 @@ public class Commit implements Serializable {
 
         //read the index of this Commit
         ind = readContentsAsString(numOfCommits);
-        Integer index=Integer.parseInt(ind)+1;
+        Integer index = Integer.parseInt(ind)+1;
         writeContents(numOfCommits,index.toString());
 
         commitname = "commit" + ind +".txt";
@@ -88,6 +91,13 @@ public class Commit implements Serializable {
     /**Return hashmap */
     public HashMap<String, String> hashmap() {return this.hashmap;}
 
+    /**Return message */
+    public String message() {return this.message;}
+
+    /**Return commitname */
+    public String commitname() {return this.commitname;}
+
+
     /**Save the object in the specific file */
     public void saveCommit(File file) {
         writeObject(file,this);
@@ -96,12 +106,15 @@ public class Commit implements Serializable {
     /**Print the commit information */
     public void printCommit(){
         System.out.println("===");
-        System.out.println("commit" + getSHA1(COMMITS_DIR, commitname));
+        System.out.println("commit " + getSHA1(COMMITS_DIR, commitname));
+        if (merge != null) {
+            System.out.println("Merge:" + merge);
+        }
         System.out.println("Date:" + date.toString());
         System.out.println(message);
         System.out.println();
-
     }
+
 
 
 }

@@ -53,10 +53,29 @@ public class Main {
                 rm(filename2);
                 break;
             case "log":
-                validateNumArgs(args,1);
+                validateNumArgs(args, 1);
                 log();
                 break;
+            case "global-log":
+                validateNumArgs(args, 1);
+                global_log();
+                break;
+            case "find":
+                validateNumArgs(args, 2);
+                String commitMessage = args[1];
+                find(commitMessage);
+                break;
+            case "checkout":
+                if (args.length == 3) {
 
+                } else if (args.length == 4) {
+
+                } else if (args.length == 2) {
+
+                } else {
+                    throw new RuntimeException(String.format("Incorrect operands"));
+                }
+                break;
 
             default:
                 System.out.println("No command with that name exists.");
@@ -71,4 +90,6 @@ public class Main {
                     String.format("Incorrect operands"));
         }
     }
+
+
 }

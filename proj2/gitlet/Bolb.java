@@ -10,11 +10,13 @@ public class Bolb implements Serializable{
     private String ind;
     private String blobname;
     private String contents;
+    private String filename;
 
 
 
     /**Create a new bolb */
     public Bolb(File file) {
+        filename = file.getName();
         //read the index of this Bolb
         ind = readContentsAsString(numOfBolbs);
         Integer index=Integer.parseInt(ind)+1;

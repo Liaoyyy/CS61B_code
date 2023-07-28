@@ -75,8 +75,6 @@ public class Commands implements Serializable {
             removeFile(REMOVAL, filename);
         }
 
-        newCommit.printCommit();
-
         writeObject(Master, newCommit);
         writeObject(Head, newCommit);
 
@@ -90,7 +88,6 @@ public class Commands implements Serializable {
 
         File Head = join(COMMITS_DIR, "head.txt");
         String SHA1 = getSHA1(CWD, filename);
-        System.out.println(SHA1);
         Commit head = readObject(Head, Commit.class);
         if (!head.checkBlob(filename,SHA1)) {
             System.out.println("No reason to remove the file.");
@@ -104,9 +101,48 @@ public class Commands implements Serializable {
         File Head = join(COMMITS_DIR, "head.txt");
         Commit head = readObject(Head, Commit.class);
         Commit curPos = head;
-        while (curPos.parent != null) {
-
+        while (curPos != null) {
+            curPos.printCommit();
+            curPos = curPos.parent;
         }
+    }
+
+    public static void global_log() {
+        List<String> commitList = plainFilenamesIn(COMMITS_DIR);
+        for (String c: commitList) {
+            File f = new File(COMMITS_DIR, c);
+            Commit C = readObject(f, Commit.class);
+            C.printCommit();
+        }
+
+    }
+
+    public static void find(String commitMessage) {
+        List<String> commitList = plainFilenamesIn(COMMITS_DIR);
+        int flag = 0;
+        for (String c: commitList) {
+            File f = new File(COMMITS_DIR, c);
+            Commit C = readObject(f, Commit.class);
+            if (C.message().equals(commitMessage)) {
+                flag = 1;
+                System.out.println(getSHA1(COMMITS_DIR, C.commitname()));
+            }
+        }
+
+        if (flag == 0) {
+            System.out.println("Found no commit with that message.");
+        }
+    }
+
+    public static void checkout3args() {
+
+    }
+
+    public static void checkout2args() {
+
+    }
+
+    public static void checkout4args() {
 
     }
 }
