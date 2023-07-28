@@ -28,7 +28,7 @@ public class Repository {
     /** The .gitlet directory. */
     public static final File GITLET_DIR = join(CWD, ".gitlet");
     /** The commits directory. */
-    public static final File COMMITS_DIR = join(GITLET_DIR, "GITLET_DIR");
+    public static final File COMMITS_DIR = join(GITLET_DIR, "COMMITS_DIR");
     /** The bolbs directory. */
     public static final File BOLBS_DIR = join(GITLET_DIR, "BOLBS_DIR");
     /** The stage area. */

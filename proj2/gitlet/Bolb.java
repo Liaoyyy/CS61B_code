@@ -10,7 +10,6 @@ public class Bolb implements Serializable{
     private String ind;
     private String blobname;
     private String contents;
-    private String sha1;
 
 
 
@@ -24,12 +23,14 @@ public class Bolb implements Serializable{
         blobname = "Blob" + ind + ".txt";
         File bolb = createFile(BOLBS_DIR, blobname);
         contents = readContentsAsString(file);
-        sha1 = sha1(contents);
         writeObject(bolb, this);
     }
 
-    /**Return the SHA1 of this Bolb file */
-    public String getSHA1() {return sha1;}
+    /** Return sha1*/
+    public String SHA1() {
+        return sha1(contents);
+    }
 
-
+    /** return the blobname*/
+    public String bolbname() {return blobname;}
 }

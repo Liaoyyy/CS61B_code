@@ -24,48 +24,48 @@ public class Commit implements Serializable {
 
     /** The message of this Commit. */
     private String message;
-    /** The SHA-1 of the directory*/
-    public String sha1;
     /** Record the parent reference of current commit*/
     public Commit parent;
     /** Record the date of this Commit*/
     private Date date;
     /** Record the index of this Commit*/
     private String ind;
+    /** Record the commit name */
+    private String commitname;
     /** Record the information of bolbs in the hashmap
      * for each node, key is the filename  and  value is the SHA1 of the file
      * */
     private HashMap<String,String> hashmap;
 
 
-    public Commit( String message, Commit parent) throws IOException {
+    public Commit(String message, String parentfilename) throws IOException {
         this.message = message;
-        this.parent = parent;
+
+        if (parentfilename.equals("null")) {
+            this.parent = null;
+        } else {
+            File parentfile = new File(COMMITS_DIR, parentfilename);
+            this.parent = readObject(parentfile, Commit.class);
+        }
 
         //read the index of this Commit
         ind = readContentsAsString(numOfCommits);
         Integer index=Integer.parseInt(ind)+1;
         writeContents(numOfCommits,index.toString());
 
-        String filename = "commit" + ind +".txt";
-        File commit = new File(COMMITS_DIR, filename);
+        commitname = "commit" + ind +".txt";
+        File commit = new File(COMMITS_DIR, commitname);
         commit.createNewFile();
         if (ind.equals("0")) {
             date = new Date(0);
-            hashmap = null;
+            hashmap = new HashMap<>();
         } else {
             date = new Date();
-            if (parent.hashmap() != null) {
-                hashmap = parent.hashmap();
-            } else {
-                hashmap = new HashMap<>();
-            }
+            hashmap = parent.hashmap();
+
         }
 
         writeObject(commit,this);
-        String content = readContentsAsString(commit);
-        this.sha1 = sha1(content);
-        writeObject(commit, this);
     }
 
     /**Add Blob to the hashmap */
@@ -77,7 +77,6 @@ public class Commit implements Serializable {
     public void rmBlob(String filename) {
         hashmap.remove(filename);
     }
-
 
     /**Check whether contains the Blob in current hashmap. if contains ,return true*/
     public boolean checkBlob(String filename, String SHA1) {
@@ -94,8 +93,15 @@ public class Commit implements Serializable {
         writeObject(file,this);
     }
 
+    /**Print the commit information */
     public void printCommit(){
-        System.out.println("commit" + ind);
+        System.out.println("===");
+        System.out.println("commit" + getSHA1(COMMITS_DIR, commitname));
         System.out.println("Date:" + date.toString());
+        System.out.println(message);
+        System.out.println();
+
     }
+
+
 }

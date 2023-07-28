@@ -18,7 +18,7 @@ public class Commands implements Serializable {
         }
         //create relevant files
         setupPersistence();
-        Commit init = new Commit("initial commit",null);
+        Commit init = new Commit("initial commit","null");
         File Master = createFile(COMMITS_DIR, "master.txt");
         File Head = createFile(COMMITS_DIR, "head.txt");
         writeObject(Master, init);
@@ -35,7 +35,7 @@ public class Commands implements Serializable {
          * if so, do not add it to ADDITION dir
          * */
         String SHA1 = getSHA1(CWD, filename);
-        File Head = join(COMMITS_DIR, "Head.txt");
+        File Head = join(COMMITS_DIR, "head.txt");
         Commit head = readObject(Head, Commit.class);
         if (head.checkBlob(filename,SHA1)) return;
 
@@ -56,27 +56,26 @@ public class Commands implements Serializable {
             System.exit(0);
         }
 
-        //create a new commit
-        Commit newCommit = new Commit(message, master);
-
+        //Create a new commit
+        Commit newCommit = new Commit(message, "head.txt");
 
         //Move the add file from dir ADDITION to BOLBS_DIR
         for (int i = 0; i < addFilenames.size(); i++) {
             String filename = addFilenames.get(i);
             File f = new File(ADDITION,filename);
             Bolb b = new Bolb(f);
-            newCommit.addBlob(filename,b.getSHA1());
+            newCommit.addBlob(filename, b.SHA1());
             removeFile(ADDITION, filename);
         }
-        //System.out.print(newCommit.hashmap().toString());
 
         //Remove the file
         for (int i = 0; i < rmFilenames.size(); i++) {
             String filename = rmFilenames.get(i);
-            System.out.println(filename);
             newCommit.rmBlob(filename);
             removeFile(REMOVAL, filename);
         }
+
+        newCommit.printCommit();
 
         writeObject(Master, newCommit);
         writeObject(Head, newCommit);
@@ -91,6 +90,7 @@ public class Commands implements Serializable {
 
         File Head = join(COMMITS_DIR, "head.txt");
         String SHA1 = getSHA1(CWD, filename);
+        System.out.println(SHA1);
         Commit head = readObject(Head, Commit.class);
         if (!head.checkBlob(filename,SHA1)) {
             System.out.println("No reason to remove the file.");
@@ -101,6 +101,12 @@ public class Commands implements Serializable {
     }
 
     public static void log() {
+        File Head = join(COMMITS_DIR, "head.txt");
+        Commit head = readObject(Head, Commit.class);
+        Commit curPos = head;
+        while (curPos.parent != null) {
+
+        }
 
     }
 }

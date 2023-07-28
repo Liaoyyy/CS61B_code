@@ -52,6 +52,10 @@ public class Main {
                 String filename2 = args[1];
                 rm(filename2);
                 break;
+            case "log":
+                validateNumArgs(args,1);
+                log();
+                break;
 
 
             default:
