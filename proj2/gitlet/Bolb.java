@@ -35,4 +35,10 @@ public class Bolb implements Serializable{
 
     /** return the blobname*/
     public String bolbname() {return blobname;}
+
+    /** Return contents */
+    public String contents() {return contents;}
+
+    /** Return filename*/
+    public String filename() {return filename;}
 }

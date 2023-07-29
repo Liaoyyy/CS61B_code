@@ -1,10 +1,12 @@
 package gitlet;
 
 
+import java.io.File;
 import java.io.IOException;
 
 import static gitlet.Commands.*;
 import static gitlet.Utils.*;
+import static gitlet.Repository.*;
 /** Driver class for Gitlet, a subset of the Git version-control system.
  *  @author TODO
  */
@@ -67,16 +69,27 @@ public class Main {
                 break;
             case "checkout":
                 if (args.length == 3) {
+                    String filename3 = args[2];
+                    checkout3args(filename3);
 
                 } else if (args.length == 4) {
+                    String commitid = args[1];
+                    String filename4 = args[3];
+                    checkout4args(commitid, filename4);
 
                 } else if (args.length == 2) {
+                    String branchname = args[1];
+                    checkout2args(branchname);
 
                 } else {
                     throw new RuntimeException(String.format("Incorrect operands"));
                 }
                 break;
-
+            case "test":
+                File f = new File(COMMITS_DIR,"commit0.txt");
+                Commit c = readObject(f, Commit.class);
+                c.printCommit();
+                break;
             default:
                 System.out.println("No command with that name exists.");
                 System.exit(-1);

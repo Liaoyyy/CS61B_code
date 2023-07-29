@@ -88,6 +88,16 @@ public class Commit implements Serializable {
         return SHA1.equals(hashmap.get(filename));
     }
 
+    public boolean checkBlob(String filename) {
+        if (hashmap == null) return false;
+        return hashmap.containsKey(filename);
+    }
+
+    /**get file's sha1 from hashmap */
+    public String blobSHA1(String filename) {
+        return hashmap.get(filename);
+    }
+
     /**Return hashmap */
     public HashMap<String, String> hashmap() {return this.hashmap;}
 

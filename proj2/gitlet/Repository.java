@@ -42,9 +42,9 @@ public class Repository {
 
 
     /** Records the num of commits in the commits directory */
-    public static final File numOfCommits = new File(COMMITS_DIR, "numOfCommits.txt");
+    public static final File numOfCommits = new File(CWD, "numOfCommits.txt");
     /** Records the num of bolbs in the staging area */
-    public static final File numOfBolbs = new File(BOLBS_DIR, "numOfBolbs.txt");
+    public static final File numOfBolbs = new File(CWD, "numOfBolbs.txt");
 
     /**Create a gitlet repository */
     public static void setupPersistence() {
@@ -115,6 +115,34 @@ public class Repository {
         String content = readContentsAsString(f);
         writeContents(f, content);
         writeContents(copy, content);
+    }
+
+    /** Copy file with SHA1 from BLOBS_DIR to current working directory */
+    public static void copyBlobFiletoWd(String SHA1) {
+        String filename = "blank";
+        String contents = "blank";
+
+        List<String> blobList = plainFilenamesIn(BOLBS_DIR);
+        for (String blobname: blobList) {
+            File f = new File(BOLBS_DIR, blobname);
+            Bolb b = readObject(f, Bolb.class);
+            if (b.SHA1().equals(SHA1)) {
+                filename = b.filename();
+                contents = b.contents();
+                break;
+            }
+        }
+
+        File f = new File(CWD, filename);
+        if (f.exists()) {
+            f.delete();
+        }
+        try {
+            f.createNewFile();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        writeContents(f, contents);
     }
 
 }

@@ -110,18 +110,17 @@ public class Commands implements Serializable {
     public static void global_log() {
         List<String> commitList = plainFilenamesIn(COMMITS_DIR);
         for (String c: commitList) {
-            File f = new File(COMMITS_DIR, c);
+            File f = join(COMMITS_DIR, c);
             Commit C = readObject(f, Commit.class);
             C.printCommit();
         }
-
     }
 
     public static void find(String commitMessage) {
         List<String> commitList = plainFilenamesIn(COMMITS_DIR);
         int flag = 0;
         for (String c: commitList) {
-            File f = new File(COMMITS_DIR, c);
+            File f = join(COMMITS_DIR, c);
             Commit C = readObject(f, Commit.class);
             if (C.message().equals(commitMessage)) {
                 flag = 1;
@@ -134,15 +133,45 @@ public class Commands implements Serializable {
         }
     }
 
-    public static void checkout3args() {
+    public static void checkout3args(String filename) {
+        File Head = join(COMMITS_DIR, "head.txt");
+        Commit head = readObject(Head, Commit.class);
+        if (head.checkBlob(filename)) {
+            System.out.println("File does not exist in that commit.");
+            System.exit(0);
+        }
+        String blobSHA1 = head.blobSHA1(filename);
+        copyBlobFiletoWd(blobSHA1);
+    }
+
+    public static void checkout2args(String branchname) {
 
     }
 
-    public static void checkout2args() {
+    public static void checkout4args(String commitID, String filename) {
+        List<String> commitList = plainFilenamesIn(COMMITS_DIR);
+        Commit targetC = null;
+        for (String c: commitList) {
+            File f = join(COMMITS_DIR, c);
+            Commit C = readObject(f, Commit.class);
+            if (commitID.equals(getSHA1(COMMITS_DIR, C.commitname()))) {
+                targetC = C;
+                break;
+            }
+        }
 
-    }
+        if (targetC == null) {
+            System.out.println("No commit with that id exists.");
+            System.exit(0);
+        }
 
-    public static void checkout4args() {
+        if (targetC.checkBlob(filename)) {
+            System.out.println("File does not exist in that commit.");
+            System.exit(0);
+        }
+
+        String blobSHA1 = targetC.blobSHA1(filename);
+        copyBlobFiletoWd(blobSHA1);
 
     }
 }
