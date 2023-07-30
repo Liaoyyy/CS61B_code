@@ -24,106 +24,84 @@ public class Commit implements Serializable {
 
     /** The message of this Commit. */
     private String message;
-    /** Record the parent reference of current commit*/
-    public Commit parent;
+    /** Record the parent reference(SHA1) of current commit*/
+    public String parentID;
     /** Record the date of this Commit*/
     private Date date;
-    /** Record the index of this Commit*/
-    private String ind;
-    /** Record the commit name */
-    private String commitname;
-    /** Record the merge information inside */
-    private String merge;
-    /** Record the information of bolbs in the hashmap
-     * for each node, key is the filename  and  value is the SHA1 of the file
+    /** The hashmap of the blobs list
+     * Key is the filename of the blob while Value records the SHA1 of the blob file
      * */
-    private HashMap<String,String> hashmap;
+    private HashMap<String, String> hashmap;
 
 
-    public Commit(String message, String parentfilename) throws IOException {
+    public Commit(String message, String parentId) {
         this.message = message;
-        this.merge = null;
+        this.parentID = parentId;
+        this.hashmap = getParentHashmap();
+        this.date = getDate();
+    }
 
-        if (parentfilename.equals("null")) {
-            this.parent = null;
+    /** get the Date information*/
+    private Date getDate() {
+        Date temp;
+        if (this.message.equals("initial commit")) {
+            temp = new Date(0);
         } else {
-            File parentfile = new File(COMMITS_DIR, parentfilename);
-            this.parent = readObject(parentfile, Commit.class);
+            temp = new Date();
         }
+        return temp;
+    }
 
-        //read the index of this Commit
-        ind = readContentsAsString(numOfCommits);
-        Integer index = Integer.parseInt(ind)+1;
-        writeContents(numOfCommits,index.toString());
-
-        commitname = "commit" + ind +".txt";
-        File commit = new File(COMMITS_DIR, commitname);
-        commit.createNewFile();
-        if (ind.equals("0")) {
-            date = new Date(0);
-            hashmap = new HashMap<>();
+    /** get parent hashmap */
+    private HashMap<String,String> getParentHashmap() {
+        Commit parent = getParentCommit();
+        if (parent == null) {
+            return new HashMap<String, String>();
         } else {
-            date = new Date();
-            hashmap = parent.hashmap();
-
+            return parent.hashmap();
         }
-
-        writeObject(commit,this);
     }
 
-    /**Add Blob to the hashmap */
-    public void addBlob(String filename, String SHA1) {
-        hashmap.put(filename,SHA1);
+    /** Get parent Commit */
+    private Commit getParentCommit() {
+        if (parentID == null) {
+            return null;
+        }
+        return readCommit(parentID);
     }
 
-    /**Remove Blob from the hashmap */
-    public void rmBlob(String filename) {
-        hashmap.remove(filename);
+    /** Save the Commit into the file with the filename of its SHA1*/
+    public File saveCommit() {
+        //get the sha1 of this commit
+        File f = new File(COMMITS_DIR, "temp");
+        writeObject(f, this);
+        String SHA1 = sha1(readContents(f));
+        f.delete();
+
+        File commitFile = new File(COMMITS_DIR, SHA1);
+        writeObject(commitFile, this);
+        return commitFile;
     }
 
-    /**Check whether contains the Blob in current hashmap. if contains ,return true*/
-    public boolean checkBlob(String filename, String SHA1) {
-        if (hashmap == null) return false;
-        if (!hashmap.containsKey(filename)) return false;
-        return SHA1.equals(hashmap.get(filename));
-    }
-
-    public boolean checkBlob(String filename) {
-        if (hashmap == null) return false;
-        return hashmap.containsKey(filename);
-    }
-
-    /**get file's sha1 from hashmap */
-    public String blobSHA1(String filename) {
-        return hashmap.get(filename);
-    }
-
-    /**Return hashmap */
-    public HashMap<String, String> hashmap() {return this.hashmap;}
-
-    /**Return message */
-    public String message() {return this.message;}
-
-    /**Return commitname */
-    public String commitname() {return this.commitname;}
-
-
-    /**Save the object in the specific file */
-    public void saveCommit(File file) {
-        writeObject(file,this);
+    /** Read the Commit from the file named sha1 */
+    public static Commit readCommit(String sha1) {
+        File f = join(COMMITS_DIR, sha1);
+        return readObject(f, Commit.class);
     }
 
     /**Print the commit information */
-    public void printCommit(){
+    public static void printCommit(String sha1){
+        Commit c = readCommit(sha1);
         System.out.println("===");
-        System.out.println("commit " + getSHA1(COMMITS_DIR, commitname));
-        if (merge != null) {
-            System.out.println("Merge:" + merge);
-        }
-        System.out.println("Date:" + date.toString());
-        System.out.println(message);
+        System.out.println("commit " + sha1);
+        System.out.println("Date:" + c.date.toString());
+        System.out.println(c.message);
         System.out.println();
     }
+
+
+    /** return Hashmap */
+    public HashMap<String, String> hashmap() {return this.hashmap;}
 
 
 

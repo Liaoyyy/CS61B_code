@@ -26,11 +26,7 @@ public class Main {
         switch(cmd) {
             case "init":
                 validateNumArgs(args, 1);
-                try {
-                    Commands.init();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
+                init();
                 break;
             case "add":
                 validateNumArgs(args, 2);
@@ -86,9 +82,7 @@ public class Main {
                 }
                 break;
             case "test":
-                File f = new File(COMMITS_DIR,"commit0.txt");
-                Commit c = readObject(f, Commit.class);
-                c.printCommit();
+
                 break;
             default:
                 System.out.println("No command with that name exists.");
