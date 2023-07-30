@@ -23,6 +23,7 @@ public class Repository {
      * variable is used. We've provided two examples for you.
      */
 
+    //Dirs
     /** The current working directory. */
     public static final File CWD = new File(System.getProperty("user.dir"));
     /** The .gitlet directory. */
@@ -40,8 +41,15 @@ public class Repository {
     /** The stage of removal directory */
     public static final File REMOVAL = join(STAGING, "removal");
 
+
+    //Files
     /** The HEAD file records sha1 of current commit */
     public static final File HEAD = join(GITLET_DIR, "HEAD");
+    /** The add file contains the hashmap of the blobs staged for addition */
+    public static final File addFile = join(ADDITION, "add");
+    /** The remove file contains the hashmap of blobs staged for removal */
+    public static final File removeFile = join(REMOVAL, "remove");
+
 
 
 
@@ -61,7 +69,28 @@ public class Repository {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        try {
+            addFile.createNewFile();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            removeFile.createNewFile();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
+    /**Check whether the file is existed in the 'path' */
+    public static boolean checkFile(File dir, String filename) {
+        List<String> list = plainFilenamesIn(dir);
+        return list.contains(filename);
+    }
+
+    /** Delete the file in path with SHA1 */
+    public static void deleteFile(File path, String SHA1) {
+        File f = join(path, SHA1);
+        f.delete();
+    }
 
 }

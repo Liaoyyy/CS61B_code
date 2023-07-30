@@ -62,6 +62,27 @@ public class Commit implements Serializable {
         }
     }
 
+    /** Return SHA1 of this commit */
+    public String commitSHA1(){
+        File f = new File(COMMITS_DIR, "temp");
+        writeObject(f, this);
+        String sha1 = sha1(readContents(f));
+        f.delete();
+        return sha1;
+    }
+
+    /** add Blob to the hashmap */
+    public void addBlob(String filename, String SHA1) {
+        hashmap.put(filename, SHA1);
+    }
+
+    /** rm Blob to the hashmap */
+    public void rmBlob(String filename) {
+        hashmap.remove(filename);
+    }
+
+
+
     /** Get parent Commit */
     private Commit getParentCommit() {
         if (parentID == null) {
@@ -71,7 +92,7 @@ public class Commit implements Serializable {
     }
 
     /** Save the Commit into the file with the filename of its SHA1*/
-    public File saveCommit() {
+    public void saveCommit() {
         //get the sha1 of this commit
         File f = new File(COMMITS_DIR, "temp");
         writeObject(f, this);
@@ -80,7 +101,6 @@ public class Commit implements Serializable {
 
         File commitFile = new File(COMMITS_DIR, SHA1);
         writeObject(commitFile, this);
-        return commitFile;
     }
 
     /** Read the Commit from the file named sha1 */
@@ -90,18 +110,19 @@ public class Commit implements Serializable {
     }
 
     /**Print the commit information */
-    public static void printCommit(String sha1){
-        Commit c = readCommit(sha1);
+    public void printCommit(){
         System.out.println("===");
-        System.out.println("commit " + sha1);
-        System.out.println("Date:" + c.date.toString());
-        System.out.println(c.message);
+        System.out.println("commit " + commitSHA1());
+        System.out.println("Date:" + this.date.toString());
+        System.out.println(this.message);
         System.out.println();
     }
 
 
     /** return Hashmap */
     public HashMap<String, String> hashmap() {return this.hashmap;}
+
+
 
 
 

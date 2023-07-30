@@ -23,17 +23,24 @@ public class Blob implements Serializable{
         this.contents = readContentsAsString(file);
     }
 
-    /** Save the Blob into file with the name of its SHA1 */
-    public File saveBlob() {
-        //get the sha1 of this commit
+
+
+    /** Return SHA1 of this blob */
+    public String blobSHA1(){
         File f = new File(BLOBS_DIR, "temp");
         writeObject(f, this);
-        String SHA1 = sha1(readContents(f));
+        String sha1 = sha1(readContents(f));
         f.delete();
+        return sha1;
+    }
 
-        File blobFile = new File(BLOBS_DIR, SHA1);
+    /** Save the Blob into file with the name of its SHA1 */
+    public void saveBlob(File path) {
+        //get the sha1 of this commit
+        String SHA1 = blobSHA1();
+
+        File blobFile = new File(path, SHA1);
         writeObject(blobFile, this);
-        return blobFile;
     }
 
     /** Read Blob from file named sha1 */
