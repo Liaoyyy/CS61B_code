@@ -2,6 +2,7 @@ package gitlet;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 public class Stage implements Serializable {
@@ -36,7 +37,7 @@ public class Stage implements Serializable {
     }
 
     /** Return the keyset of hashmap */
-    public Set set() {
+    public Set<Map.Entry<String, String>> set() {
         return hashmap.entrySet();
 
     }

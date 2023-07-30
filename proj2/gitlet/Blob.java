@@ -12,9 +12,9 @@ import static gitlet.Utils.readContents;
 public class Blob implements Serializable{
 
     /** The filename of this Blob */
-    private String filename;
+    public String filename;
     /** The contents of this Blob */
-    private String contents;
+    public String contents;
 
 
     /**Create a new bolb */

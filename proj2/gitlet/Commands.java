@@ -108,41 +108,100 @@ public class Commands implements Serializable {
             String sha1 = entry.getValue();
             newCommit.addBlob(filename, sha1);
             add.rmBlob(filename);
+            File f = join(ADDITION, sha1);
+            Blob blob = readObject(f, Blob.class);
+            f.delete();
+            blob.saveBlob(BLOBS_DIR);
+        }
 
-
+        for (Map.Entry<String, String> entry: rmset) {
+            String filename = entry.getKey();
+            String sha1 = entry.getValue();
+            newCommit.rmBlob(filename);
+            remove.rmBlob(filename);
+            deleteFile(REMOVAL, sha1);
         }
 
         writeObject(addFile, add);
         writeObject(removeFile, remove);
         newCommit.saveCommit();
         writeContents(HEAD, newCommit.commitSHA1());
-
-
     }
 
 
 
     public static void log() {
-
+        Commit head = readCommit(readContentsAsString(HEAD));
+        Commit curPos = head;
+        while (curPos.parentID() != null) {
+            curPos.printCommit();
+            curPos = readCommit(curPos.parentID());
+        }
+        curPos.printCommit();
     }
 
     public static void global_log() {
-
+        List<String> commitList = plainFilenamesIn(COMMITS_DIR);
+        for (String sha1: commitList) {
+            Commit c = readCommit(sha1);
+            c.printCommit();
+        }
     }
 
     public static void find(String commitMessage) {
+        int flag = 0;
+        List<String> commitList = plainFilenamesIn(COMMITS_DIR);
+        for (String sha1: commitList) {
+            Commit c = readCommit(sha1);
+            if (c.message().equals(commitMessage)) {
+                flag = 1;
+                System.out.println(sha1);
+            }
+        }
+
+        if (flag == 0) {
+            System.out.println("Found no commit with that message.");
+        }
+    }
+
+
+    public static void checkout(String filename) {
+        Commit head = readCommit(readContentsAsString(HEAD));
+        String targetSHA1 = head.getBlobSHA1(filename);
+        if (targetSHA1 == null) {
+            System.out.println("File does not exist in that commit.");
+            System.exit(0);
+        }
+        Blob blob = readBlob(targetSHA1);
+        String filename1 = blob.filename;
+        String contents = blob.contents;
+        File f = join(CWD, filename);
+        writeContents(f, contents);
+    }
+
+    public static void checkoutBranch(String branchname) {
 
     }
 
-    public static void checkout3args(String filename) {
+    public static void checkout(String commitID, String filename) {
+        Commit C = readCommit(commitID);
+        if (C == null) {
+            System.out.println("No commit with that id exists.");
+            System.exit(0);
+        }
 
-    }
+        String targetSHA1 = C.getBlobSHA1(filename);
+        if (targetSHA1 == null) {
+            System.out.println("File does not exist in that commit.");
+            System.exit(0);
+        }
 
-    public static void checkout2args(String branchname) {
+        Blob blob = readBlob(targetSHA1);
+        String filename1 = blob.filename;
+        String contents = blob.contents;
+        File f = join(CWD, filename);
+        writeContents(f, contents);
 
-    }
-
-    public static void checkout4args(String commitID, String filename) {
 
 
     }

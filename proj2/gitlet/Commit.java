@@ -25,7 +25,7 @@ public class Commit implements Serializable {
     /** The message of this Commit. */
     private String message;
     /** Record the parent reference(SHA1) of current commit*/
-    public String parentID;
+    private String parentID;
     /** Record the date of this Commit*/
     private Date date;
     /** The hashmap of the blobs list
@@ -40,6 +40,7 @@ public class Commit implements Serializable {
         this.hashmap = getParentHashmap();
         this.date = getDate();
     }
+
 
     /** get the Date information*/
     private Date getDate() {
@@ -81,7 +82,10 @@ public class Commit implements Serializable {
         hashmap.remove(filename);
     }
 
-
+    /** get the SHA1 of Blob named filename inside hashmap */
+    public String getBlobSHA1(String filename) {
+        return hashmap.get(filename);
+    }
 
     /** Get parent Commit */
     private Commit getParentCommit() {
@@ -106,6 +110,7 @@ public class Commit implements Serializable {
     /** Read the Commit from the file named sha1 */
     public static Commit readCommit(String sha1) {
         File f = join(COMMITS_DIR, sha1);
+        if (!f.exists()) return null;
         return readObject(f, Commit.class);
     }
 
@@ -122,7 +127,11 @@ public class Commit implements Serializable {
     /** return Hashmap */
     public HashMap<String, String> hashmap() {return this.hashmap;}
 
+    /** return parendID */
+    public String parentID() {return this.parentID;}
 
+    /** return message */
+    public String message() {return this.message;}
 
 
 

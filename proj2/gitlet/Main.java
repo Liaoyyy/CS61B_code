@@ -39,11 +39,7 @@ public class Main {
                     System.exit(-1);
                 }
                 String message = args[1];
-                try {
-                    commit(message);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
+                commit(message);
                 break;
             case "rm":
                 validateNumArgs(args, 2);
@@ -64,21 +60,32 @@ public class Main {
                 find(commitMessage);
                 break;
             case "checkout":
-                if (args.length == 3) {
-                    String filename3 = args[2];
-                    checkout3args(filename3);
-
-                } else if (args.length == 4) {
-                    String commitid = args[1];
-                    String filename4 = args[3];
-                    checkout4args(commitid, filename4);
-
-                } else if (args.length == 2) {
-                    String branchname = args[1];
-                    checkout2args(branchname);
-
-                } else {
-                    throw new RuntimeException(String.format("Incorrect operands"));
+                int length = args.length;
+                switch(length) {
+                    case 3:
+                        if (!args[1].equals("--")){
+                            System.out.println("Incorrect operands");
+                            System.exit(0);
+                        }
+                        String filename3 = args[2];
+                        checkout(filename3);
+                        break;
+                    case 4:
+                        if (!args[2].equals("--")){
+                            System.out.println("Incorrect operands");
+                            System.exit(0);
+                        }
+                        String commitid = args[1];
+                        String filename4 = args[3];
+                        checkout(commitid, filename4);
+                        break;
+                    case 2:
+                        String branchname = args[1];
+                        checkoutBranch(branchname);
+                        break;
+                    default:
+                        System.out.println("Incorrect operands");
+                        System.exit(0);
                 }
                 break;
             case "test":
