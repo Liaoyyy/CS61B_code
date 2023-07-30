@@ -40,6 +40,10 @@ public class Repository {
     public static final File ADDITION = join(STAGING, "addition");
     /** The stage of removal directory */
     public static final File REMOVAL = join(STAGING, "removal");
+    /** The reference directory */
+    public static final File REFERENCE_DIR = join(GITLET_DIR, "refs");
+    /** The branches directory */
+    public static final File BRANCH_DIR =  join(REFERENCE_DIR, "branches");
 
 
     //Files
@@ -63,6 +67,8 @@ public class Repository {
         STAGING.mkdir();
         ADDITION.mkdir();
         REMOVAL.mkdir();
+        REFERENCE_DIR.mkdir();
+        BRANCH_DIR.mkdir();
 
         try {
             HEAD.createNewFile();

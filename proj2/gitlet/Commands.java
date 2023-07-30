@@ -202,7 +202,9 @@ public class Commands implements Serializable {
         File f = join(CWD, filename);
         writeContents(f, contents);
 
+    }
 
+    public static void branch(String branchname) {
 
     }
 }

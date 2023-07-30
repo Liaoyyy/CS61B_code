@@ -88,8 +88,14 @@ public class Main {
                         System.exit(0);
                 }
                 break;
-            case "test":
-
+            case "branch":
+                validateNumArgs(args, 2);
+                String branchname1 = args[1];
+                branch(branchname1);
+                break;
+            case "rm-branch":
+                validateNumArgs(args, 2);
+                String branchname2 = args[1];
                 break;
             default:
                 System.out.println("No command with that name exists.");

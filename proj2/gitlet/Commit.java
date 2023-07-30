@@ -1,7 +1,6 @@
 package gitlet;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -122,7 +121,7 @@ public class Commit implements Serializable {
         DateFormat dateFormat = new SimpleDateFormat("EEE MMM d HH:mm:ss yyyy Z", Locale.ENGLISH);
         System.out.println("===");
         System.out.println("commit " + commitSHA1());
-        System.out.println("Date:" + dateFormat.format(date));
+        System.out.println("Date: " + dateFormat.format(date));
         System.out.println(this.message);
         System.out.println();
     }
