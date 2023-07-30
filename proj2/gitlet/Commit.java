@@ -3,8 +3,11 @@ package gitlet;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 
 import static gitlet.Utils.*;
 import static gitlet.Repository.*;
@@ -116,9 +119,10 @@ public class Commit implements Serializable {
 
     /**Print the commit information */
     public void printCommit(){
+        DateFormat dateFormat = new SimpleDateFormat("EEE MMM d HH:mm:ss yyyy Z", Locale.ENGLISH);
         System.out.println("===");
         System.out.println("commit " + commitSHA1());
-        System.out.println("Date:" + this.date.toString());
+        System.out.println("Date:" + dateFormat.format(date));
         System.out.println(this.message);
         System.out.println();
     }
