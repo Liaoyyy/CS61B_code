@@ -104,25 +104,28 @@ public class Commands implements Serializable {
         }
 
         Commit newCommit = new Commit(message, parentID);
-        Set<Map.Entry<String, String>> addset = add.set();
-        Set<Map.Entry<String, String>> rmset = remove.set();
+        Set<String> addset = add.keySet();
+        Set<String> rmset = remove.keySet();
+        List<String> addList = new ArrayList<String>(addset);
+        List<String> rmList = new ArrayList<String>(rmset);
 
-        for (Map.Entry<String, String> entry: addset) {
-            String filename = entry.getKey();
-            String sha1 = entry.getValue();
-            newCommit.addBlob(filename, sha1);
-            add.rmBlob(filename);
+
+        for (String addfile: addList) {
+            String sha1 = add.getSHA1(addfile);
+            newCommit.addBlob(addfile, sha1);
+            add.rmBlob(addfile);
             File f = join(ADDITION, sha1);
             Blob blob = readObject(f, Blob.class);
             f.delete();
             blob.saveBlob(BLOBS_DIR);
+
         }
 
-        for (Map.Entry<String, String> entry: rmset) {
-            String filename = entry.getKey();
-            String sha1 = entry.getValue();
-            newCommit.rmBlob(filename);
-            remove.rmBlob(filename);
+
+        for (String rmfile : rmList) {
+            String sha1 = remove.getSHA1(rmfile);
+            newCommit.rmBlob(rmfile);
+            remove.rmBlob(rmfile);
             deleteFile(REMOVAL, sha1);
         }
 
@@ -254,7 +257,6 @@ public class Commands implements Serializable {
         //Add section
         System.out.println("=== Staged Files ===");
         for (String addFile: addList) {
-            if (addFile.equals("add")) continue;
             System.out.println(addFile);
         }
         System.out.println();
@@ -262,7 +264,6 @@ public class Commands implements Serializable {
         //Remove section
         System.out.println("=== Removed Files ===");
         for (String removeFile: rmList) {
-            if (removeFile.equals("remove")) continue;
             System.out.println(removeFile);
         }
         System.out.println();
