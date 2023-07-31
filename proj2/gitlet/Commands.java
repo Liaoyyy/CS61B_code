@@ -42,6 +42,15 @@ public class Commands implements Serializable {
         File f = join(CWD, filename);
         Blob blob = new Blob(f);
         String sha1 = blob.blobSHA1();
+        Stage add = readObject(addFile, Stage.class);
+
+        // If there is a file with identical name in the REMOVAL dir, remove them both
+        Stage remove = readObject(removeFile, Stage.class);
+        if (remove.getSHA1(filename).equals(sha1)) {
+            remove.rmBlob(filename);
+            writeObject(removeFile, remove);
+            System.exit(0);
+        }
 
         File Branch = join(BRANCH_DIR,readContentsAsString(HEAD));
         Commit head = readCommit(readContentsAsString(Branch));
@@ -49,7 +58,6 @@ public class Commands implements Serializable {
         if (head.hashmap().containsValue(sha1)) {
             System.exit(0);
         }
-        Stage add = readObject(addFile, Stage.class);
         String stagedSHA1 = add.getSHA1(filename);
         if (stagedSHA1 != null) {
             //There is a file with the same name but different contents in ADDITION dir
