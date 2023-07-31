@@ -46,7 +46,8 @@ public class Commands implements Serializable {
 
         // If there is a file with identical name in the REMOVAL dir, remove them both
         Stage remove = readObject(removeFile, Stage.class);
-        if (remove.getSHA1(filename).equals(sha1)) {
+        String rmSha1 = remove.getSHA1(filename);
+        if (rmSha1 != null && rmSha1.equals(sha1)) {
             remove.rmBlob(filename);
             writeObject(removeFile, remove);
             System.exit(0);
