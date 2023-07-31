@@ -36,7 +36,7 @@ public class Main {
             case "commit":
                 if (args.length != 2 || args[1].trim().length() == 0 ) {
                     System.out.println("Please enter a commit message.");
-                    System.exit(-1);
+                    System.exit(0);
                 }
                 String message = args[1];
                 commit(message);
