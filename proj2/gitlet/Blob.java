@@ -4,12 +4,11 @@ import java.io.File;
 import java.io.Serializable;
 
 import static gitlet.Repository.BLOBS_DIR;
-import static gitlet.Repository.COMMITS_DIR;
 import static gitlet.Utils.*;
 
 import static gitlet.Utils.readContents;
 
-public class Blob implements Serializable{
+public class Blob implements Serializable {
 
     /** The filename of this Blob */
     public String filename;
@@ -26,7 +25,7 @@ public class Blob implements Serializable{
 
 
     /** Return SHA1 of this blob */
-    public String blobSHA1(){
+    public String blobSHA1() {
         File f = new File(BLOBS_DIR, "temp");
         writeObject(f, this);
         String sha1 = sha1(readContents(f));
