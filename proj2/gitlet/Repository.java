@@ -53,7 +53,8 @@ public class Repository {
     public static final File addFile = join(ADDITION, "add");
     /** The remove file contains the hashmap of blobs staged for removal */
     public static final File removeFile = join(REMOVAL, "remove");
-
+    /** The master brancn file */
+    public static final File MASTER = join(BRANCH_DIR, "master");
 
 
 
@@ -82,6 +83,11 @@ public class Repository {
         }
         try {
             removeFile.createNewFile();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            MASTER.createNewFile();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

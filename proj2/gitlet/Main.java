@@ -34,7 +34,7 @@ public class Main {
                 add(filename1);
                 break;
             case "commit":
-                if (args.length != 2) {
+                if (args.length != 2 || args[1].trim().length() == 0 ) {
                     System.out.println("Please enter a commit message.");
                     System.exit(-1);
                 }
@@ -58,6 +58,10 @@ public class Main {
                 validateNumArgs(args, 2);
                 String commitMessage = args[1];
                 find(commitMessage);
+                break;
+            case "status":
+                validateNumArgs(args, 1);
+                status();
                 break;
             case "checkout":
                 int length = args.length;
@@ -96,6 +100,7 @@ public class Main {
             case "rm-branch":
                 validateNumArgs(args, 2);
                 String branchname2 = args[1];
+                rmbranch(branchname2);
                 break;
             default:
                 System.out.println("No command with that name exists.");

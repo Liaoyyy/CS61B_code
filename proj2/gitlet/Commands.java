@@ -23,7 +23,8 @@ public class Commands implements Serializable {
 
         // creat initial commit0
         Commit init = new Commit("initial commit", null);
-        writeContents(HEAD, init.commitSHA1());
+        writeContents(MASTER, init.commitSHA1());
+        writeContents(HEAD, MASTER.getName());
         init.saveCommit();
 
         // create stage class (add+remove)
@@ -42,7 +43,8 @@ public class Commands implements Serializable {
         Blob blob = new Blob(f);
         String sha1 = blob.blobSHA1();
 
-        Commit head = readCommit(readContentsAsString(HEAD));
+        File Branch = join(BRANCH_DIR,readContentsAsString(HEAD));
+        Commit head = readCommit(readContentsAsString(Branch));
         // If there is a file in current commit identical to the added file, quit
         if (head.hashmap().containsValue(sha1)) {
             System.exit(0);
@@ -73,7 +75,8 @@ public class Commands implements Serializable {
             System.exit(0);
         }
 
-        Commit head = readCommit(readContentsAsString(HEAD));
+        File Branch = join(BRANCH_DIR,readContentsAsString(HEAD));
+        Commit head = readCommit(readContentsAsString(Branch));
         if (!head.hashmap().containsKey(filename)) {
             System.out.println("No reason to remove the file.");
             System.exit(0);
@@ -92,7 +95,8 @@ public class Commands implements Serializable {
     public static void commit(String message) {
         Stage add = readObject(addFile, Stage.class);
         Stage remove = readObject(removeFile, Stage.class);
-        String parentID = readContentsAsString(HEAD);
+        File Branch = join(BRANCH_DIR,readContentsAsString(HEAD));
+        String parentID = readContentsAsString(Branch);
 
         if (add.isEmpty() && remove.isEmpty()) {
             System.out.println("No changes added to the commit.");
@@ -125,13 +129,14 @@ public class Commands implements Serializable {
         writeObject(addFile, add);
         writeObject(removeFile, remove);
         newCommit.saveCommit();
-        writeContents(HEAD, newCommit.commitSHA1());
+        writeContents(Branch, newCommit.commitSHA1());
     }
 
 
 
     public static void log() {
-        Commit head = readCommit(readContentsAsString(HEAD));
+        File Branch = join(BRANCH_DIR,readContentsAsString(HEAD));
+        Commit head = readCommit(readContentsAsString(Branch));
         Commit curPos = head;
         while (curPos.parentID() != null) {
             curPos.printCommit();
@@ -166,12 +171,14 @@ public class Commands implements Serializable {
 
 
     public static void checkout(String filename) {
-        Commit head = readCommit(readContentsAsString(HEAD));
+        File Branch = join(BRANCH_DIR,readContentsAsString(HEAD));
+        Commit head = readCommit(readContentsAsString(Branch));
         String targetSHA1 = head.getBlobSHA1(filename);
         if (targetSHA1 == null) {
             System.out.println("File does not exist in that commit.");
             System.exit(0);
         }
+        System.out.println(targetSHA1);
         Blob blob = readBlob(targetSHA1);
         String filename1 = blob.filename;
         String contents = blob.contents;
@@ -205,6 +212,68 @@ public class Commands implements Serializable {
     }
 
     public static void branch(String branchname) {
+        File Head = join(BRANCH_DIR, readContentsAsString(HEAD));
+        String curSHA1 = readContentsAsString(Head);
+        File f = new File(BRANCH_DIR, branchname);
+        writeContents(f, curSHA1);
+    }
 
+    public static void rmbranch(String branchname) {
+        File f = join(REFERENCE_DIR, branchname);
+        f.delete();
+    }
+
+    public static void status() {
+        Stage add = readObject(addFile, Stage.class);
+        Stage remove = readObject(removeFile, Stage.class);
+
+        Set<String> addset = add.keySet();
+        Set<String> rmset = remove.keySet();
+
+        String currentBranch = readContentsAsString(HEAD);
+        List<String> branchList = plainFilenamesIn(BRANCH_DIR);
+        List<String> addList = new ArrayList<String>(addset);
+        List<String> rmList = new ArrayList<String>(rmset);
+        addList.sort(null);
+        rmList.sort(null);
+
+
+
+        //Branch section
+        System.out.println("=== Branches ===");
+        if (branchList.size() == 0) System.out.println("!!!");
+        for (String branch: branchList) {
+            if (branch.equals(currentBranch)) {
+                System.out.println("*" + branch);
+            } else {
+                System.out.println(branch);
+            }
+        }
+        System.out.println();
+
+        //Add section
+        System.out.println("=== Staged Files ===");
+        for (String addFile: addList) {
+            if (addFile.equals("add")) continue;
+            System.out.println(addFile);
+        }
+        System.out.println();
+
+        //Remove section
+        System.out.println("=== Removed Files ===");
+        for (String removeFile: rmList) {
+            if (removeFile.equals("remove")) continue;
+            System.out.println(removeFile);
+        }
+        System.out.println();
+
+        //Modification but not stage section
+        System.out.println("=== Modifications Not Staged For Commit ===");
+        System.out.println();
+
+        //Untracked files
+        System.out.println("=== Untracked Files ===");
+        System.out.println();
     }
 }
+

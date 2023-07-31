@@ -36,9 +36,15 @@ public class Stage implements Serializable {
         return hashmap.isEmpty();
     }
 
-    /** Return the keyset of hashmap */
+    /** Return the entries set of hashmap */
     public Set<Map.Entry<String, String>> set() {
         return hashmap.entrySet();
 
     }
+
+    /** Return the Key set in hashmap */
+    public Set<String> keySet() {
+        return hashmap.keySet();
+    }
+
 }
