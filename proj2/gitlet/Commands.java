@@ -181,7 +181,6 @@ public class Commands implements Serializable {
             System.out.println("File does not exist in that commit.");
             System.exit(0);
         }
-        System.out.println(targetSHA1);
         Blob blob = readBlob(targetSHA1);
         String filename1 = blob.filename;
         String contents = blob.contents;
