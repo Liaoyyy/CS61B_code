@@ -190,11 +190,88 @@ public class Commands implements Serializable {
     }
 
     public static void checkoutBranch(String branchname) {
+        File f = join(BRANCH_DIR, branchname);
+        if (!f.exists()) {
+            System.out.println("No such branch exists.");
+            System.exit(0);
+        }
+        String branchSha1 = readContentsAsString(f);
+
+        if (readContentsAsString(HEAD).equals(branchname)) {
+            System.out.println("No need to checkout the current branch.");
+            System.exit(0);
+        }
+        File curf= join(BRANCH_DIR, readContentsAsString(HEAD));
+        String curSha1 = readContentsAsString(curf);
+        Commit branchCommit = readCommit(branchSha1);
+        Commit currentCommit = readCommit(curSha1);
+        List<String> curList = plainFilenamesIn(CWD);
+        for (String curFile: curList) {
+            if (currentCommit.getBlobSHA1(curFile) == null) {
+                System.out.println(curFile);
+                System.out.println("There is an untracked file in the way; delete it, or add and commit it first.");
+                System.exit(0);
+            }
+        }
+
+        // Empty the ADDITION and REMOVAL dir
+        Stage add = readObject(addFile, Stage.class);
+        Stage remove = readObject(removeFile, Stage.class);
+        Set<String> addset = add.keySet();
+        Set<String> rmset = remove.keySet();
+        List<String> addList = new ArrayList<String>(addset);
+        List<String> rmList = new ArrayList<String>(rmset);
+        for (String addfile: addList) {
+            String sha1 = add.getSHA1(addfile);
+            deleteFile(ADDITION, sha1);
+            add.rmBlob(addfile);
+        }
+        for (String rmfile: rmList) {
+            String sha1 = add.getSHA1(rmfile);
+            deleteFile(REMOVAL, sha1);
+            remove.rmBlob(rmfile);
+        }
+
+        // Overwrite
+        Collection<String> sha1s = branchCommit.hashmap().values();
+        Iterator<String> shaIterator = sha1s.iterator();
+        while (shaIterator.hasNext()) {
+            String sha1 = shaIterator.next();
+            Blob b = readBlob(sha1);
+            String filename = b.filename;
+            String contents = b.contents;
+            File temp = join(CWD, filename);
+            writeContents(temp, contents);
+        }
+
+        // Delete the file untracked in check-out branch
+        for (String curFile: curList) {
+            if (branchCommit.getBlobSHA1(curFile) == null) {
+                deleteFile(CWD, curFile);
+            }
+        }
+
+        writeContents(HEAD, branchname);
 
     }
 
     public static void checkout(String commitID, String filename) {
-        Commit C = readCommit(commitID);
+        Commit C = null;
+        if (commitID.length() == 40) {
+            C = readCommit(commitID);
+        } else if (commitID.length() == 6) {
+            List<String> commitList = plainFilenamesIn(COMMITS_DIR);
+            for (String commitName: commitList) {
+                String subName = commitName.substring(0,6);
+                if (subName.equals(commitID)) {
+                    C = readCommit(commitName);
+                }
+            }
+        } else {
+            System.out.println("No commit with that id exists.");
+            System.exit(0);
+        }
+
         if (C == null) {
             System.out.println("No commit with that id exists.");
             System.exit(0);
