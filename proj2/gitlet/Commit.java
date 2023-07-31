@@ -56,7 +56,7 @@ public class Commit implements Serializable {
     }
 
     /** get parent hashmap */
-    private HashMap<String,String> getParentHashmap() {
+    private HashMap<String, String> getParentHashmap() {
         Commit parent = getParentCommit();
         if (parent == null) {
             return new HashMap<String, String>();
@@ -66,7 +66,7 @@ public class Commit implements Serializable {
     }
 
     /** Return SHA1 of this commit */
-    public String commitSHA1(){
+    public String commitSHA1() {
         File f = new File(COMMITS_DIR, "temp");
         writeObject(f, this);
         String sha1 = sha1(readContents(f));
@@ -75,8 +75,8 @@ public class Commit implements Serializable {
     }
 
     /** add Blob to the hashmap */
-    public void addBlob(String filename, String SHA1) {
-        hashmap.put(filename, SHA1);
+    public void addBlob(String filename, String Sha1) {
+        hashmap.put(filename, Sha1);
     }
 
     /** rm Blob to the hashmap */
@@ -102,22 +102,24 @@ public class Commit implements Serializable {
         //get the sha1 of this commit
         File f = new File(COMMITS_DIR, "temp");
         writeObject(f, this);
-        String SHA1 = sha1(readContents(f));
+        String Sha1 = sha1(readContents(f));
         f.delete();
 
-        File commitFile = new File(COMMITS_DIR, SHA1);
+        File commitFile = new File(COMMITS_DIR, Sha1);
         writeObject(commitFile, this);
     }
 
     /** Read the Commit from the file named sha1 */
     public static Commit readCommit(String sha1) {
         File f = join(COMMITS_DIR, sha1);
-        if (!f.exists()) return null;
+        if (!f.exists()) {
+            return null;
+        }
         return readObject(f, Commit.class);
     }
 
     /**Print the commit information */
-    public void printCommit(){
+    public void printCommit() {
         DateFormat dateFormat = new SimpleDateFormat("EEE MMM d HH:mm:ss yyyy Z", Locale.ENGLISH);
         System.out.println("===");
         System.out.println("commit " + commitSHA1());
@@ -128,13 +130,17 @@ public class Commit implements Serializable {
 
 
     /** return Hashmap */
-    public HashMap<String, String> hashmap() {return this.hashmap;}
+    public HashMap<String, String> hashmap() {
+        return this.hashmap;
+    }
 
     /** return parendID */
-    public String parentID() {return this.parentID;}
+    public String parentID() {
+        return this.parentID;
+    }
 
     /** return message */
-    public String message() {return this.message;}
-
-
+    public String message() {
+        return this.message;
+    }
 }

@@ -52,7 +52,7 @@ public class Main {
                 break;
             case "global-log":
                 validateNumArgs(args, 1);
-                global_log();
+                globalLog();
                 break;
             case "find":
                 validateNumArgs(args, 2);

@@ -23,7 +23,7 @@ public class Stage implements Serializable {
 
     /** Put a blob information into the hashmap */
     public void putBlob(String filename, String sha1) {
-        hashmap.put(filename,sha1);
+        hashmap.put(filename, sha1);
     }
 
     /** Remove a blob information form the hashmap */

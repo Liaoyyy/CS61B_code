@@ -1,7 +1,6 @@
 package gitlet;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.*;
 
@@ -15,7 +14,8 @@ public class Commands implements Serializable {
     /**Initialize the gitlet directory */
     public static void init() {
         if (GITLET_DIR.exists()) {
-            System.out.println("A Gitlet version-control system already exists in the current directory.");
+            System.out.println("A Gitlet version-control system already " +
+                    "exists in the current directory.");
             System.exit(0);
         }
         //create necessary files and dirs
@@ -30,8 +30,8 @@ public class Commands implements Serializable {
         // create stage class (add+remove)
         Stage add = new Stage();
         Stage remove = new Stage();
-        writeObject(addFile, add);
-        writeObject(removeFile, remove);
+        writeObject(ADDFILE, add);
+        writeObject(REMOVEFILE, remove);
     }
 
     public static void add(String filename) {
@@ -42,19 +42,19 @@ public class Commands implements Serializable {
         File f = join(CWD, filename);
         Blob blob = new Blob(f);
         String sha1 = blob.blobSHA1();
-        Stage add = readObject(addFile, Stage.class);
+        Stage add = readObject(ADDFILE, Stage.class);
 
         // If there is a file with identical name in the REMOVAL dir, remove them both
-        Stage remove = readObject(removeFile, Stage.class);
+        Stage remove = readObject(REMOVEFILE, Stage.class);
         String rmSha1 = remove.getSHA1(filename);
         if (rmSha1 != null && rmSha1.equals(sha1)) {
             remove.rmBlob(filename);
-            writeObject(removeFile, remove);
+            writeObject(REMOVEFILE, remove);
             System.exit(0);
         }
 
-        File Branch = join(BRANCH_DIR,readContentsAsString(HEAD));
-        Commit head = readCommit(readContentsAsString(Branch));
+        File branch = join(BRANCH_DIR, readContentsAsString(HEAD));
+        Commit head = readCommit(readContentsAsString(branch));
         // If there is a file in current commit identical to the added file, quit
         if (head.hashmap().containsValue(sha1)) {
             System.exit(0);
@@ -70,22 +70,22 @@ public class Commands implements Serializable {
             blob.saveBlob(ADDITION);
         }
 
-        //save addFile
-        writeObject(addFile, add);
+        //save ADDFILE
+        writeObject(ADDFILE, add);
     }
 
     public static void rm(String filename) {
-        Stage add = readObject(addFile, Stage.class);
+        Stage add = readObject(ADDFILE, Stage.class);
         if (add.checkBlob(filename)) {
             String stagedSHA1 = add.getSHA1(filename);
             add.rmBlob(filename);
             deleteFile(ADDITION, stagedSHA1);
-            writeObject(addFile, add);
+            writeObject(ADDFILE, add);
             System.exit(0);
         }
 
-        File Branch = join(BRANCH_DIR,readContentsAsString(HEAD));
-        Commit head = readCommit(readContentsAsString(Branch));
+        File branch = join(BRANCH_DIR, readContentsAsString(HEAD));
+        Commit head = readCommit(readContentsAsString(branch));
         if (!head.hashmap().containsKey(filename)) {
             System.out.println("No reason to remove the file.");
             System.exit(0);
@@ -93,19 +93,19 @@ public class Commands implements Serializable {
 
         File f = join(CWD, filename);
         Blob blob = new Blob(f);
-        String SHA1 = blob.blobSHA1();
-        Stage remove = readObject(removeFile, Stage.class);
-        remove.putBlob(filename, SHA1);
+        String Sha1 = blob.blobSHA1();
+        Stage remove = readObject(REMOVEFILE, Stage.class);
+        remove.putBlob(filename, Sha1);
         deleteFile(CWD, filename);
         blob.saveBlob(REMOVAL);
-        writeObject(removeFile, remove);
+        writeObject(REMOVEFILE, remove);
     }
 
     public static void commit(String message) {
-        Stage add = readObject(addFile, Stage.class);
-        Stage remove = readObject(removeFile, Stage.class);
-        File Branch = join(BRANCH_DIR,readContentsAsString(HEAD));
-        String parentID = readContentsAsString(Branch);
+        Stage add = readObject(ADDFILE, Stage.class);
+        Stage remove = readObject(REMOVEFILE, Stage.class);
+        File branch = join(BRANCH_DIR, readContentsAsString(HEAD));
+        String parentID = readContentsAsString(branch);
 
         if (add.isEmpty() && remove.isEmpty()) {
             System.out.println("No changes added to the commit.");
@@ -138,17 +138,17 @@ public class Commands implements Serializable {
             deleteFile(REMOVAL, sha1);
         }
 
-        writeObject(addFile, add);
-        writeObject(removeFile, remove);
+        writeObject(ADDFILE, add);
+        writeObject(REMOVEFILE, remove);
         newCommit.saveCommit();
-        writeContents(Branch, newCommit.commitSHA1());
+        writeContents(branch, newCommit.commitSHA1());
     }
 
 
 
     public static void log() {
-        File Branch = join(BRANCH_DIR,readContentsAsString(HEAD));
-        Commit head = readCommit(readContentsAsString(Branch));
+        File branch = join(BRANCH_DIR, readContentsAsString(HEAD));
+        Commit head = readCommit(readContentsAsString(branch));
         Commit curPos = head;
         while (curPos.parentID() != null) {
             curPos.printCommit();
@@ -157,7 +157,7 @@ public class Commands implements Serializable {
         curPos.printCommit();
     }
 
-    public static void global_log() {
+    public static void globalLog() {
         List<String> commitList = plainFilenamesIn(COMMITS_DIR);
         for (String sha1: commitList) {
             Commit c = readCommit(sha1);
@@ -183,16 +183,16 @@ public class Commands implements Serializable {
 
 
     public static void checkout(String filename) {
-        File Branch = join(BRANCH_DIR,readContentsAsString(HEAD));
-        Commit head = readCommit(readContentsAsString(Branch));
+        File branch = join(BRANCH_DIR, readContentsAsString(HEAD));
+        Commit head = readCommit(readContentsAsString(branch));
         String targetSHA1 = head.getBlobSHA1(filename);
         if (targetSHA1 == null) {
             System.out.println("File does not exist in that commit.");
             System.exit(0);
         }
         Blob blob = readBlob(targetSHA1);
-        String filename1 = blob.filename;
-        String contents = blob.contents;
+        String filename1 = blob.filename();
+        String contents = blob.contents();
         File f = join(CWD, filename);
         writeContents(f, contents);
     }
@@ -209,7 +209,7 @@ public class Commands implements Serializable {
             System.out.println("No need to checkout the current branch.");
             System.exit(0);
         }
-        File curf= join(BRANCH_DIR, readContentsAsString(HEAD));
+        File curf = join(BRANCH_DIR, readContentsAsString(HEAD));
         String curSha1 = readContentsAsString(curf);
         Commit branchCommit = readCommit(branchSha1);
         Commit currentCommit = readCommit(curSha1);
@@ -217,14 +217,15 @@ public class Commands implements Serializable {
         for (String curFile: curList) {
             if (currentCommit.getBlobSHA1(curFile) == null) {
                 System.out.println(curFile);
-                System.out.println("There is an untracked file in the way; delete it, or add and commit it first.");
+                System.out.println("There is an untracked file in the way; " +
+                        "delete it, or add and commit it first.");
                 System.exit(0);
             }
         }
 
         // Empty the ADDITION and REMOVAL dir
-        Stage add = readObject(addFile, Stage.class);
-        Stage remove = readObject(removeFile, Stage.class);
+        Stage add = readObject(ADDFILE, Stage.class);
+        Stage remove = readObject(REMOVEFILE, Stage.class);
         Set<String> addset = add.keySet();
         Set<String> rmset = remove.keySet();
         List<String> addList = new ArrayList<String>(addset);
@@ -246,8 +247,8 @@ public class Commands implements Serializable {
         while (shaIterator.hasNext()) {
             String sha1 = shaIterator.next();
             Blob b = readBlob(sha1);
-            String filename = b.filename;
-            String contents = b.contents;
+            String filename = b.filename();
+            String contents = b.contents();
             File temp = join(CWD, filename);
             writeContents(temp, contents);
         }
@@ -292,16 +293,16 @@ public class Commands implements Serializable {
         }
 
         Blob blob = readBlob(targetSHA1);
-        String filename1 = blob.filename;
-        String contents = blob.contents;
+        String filename1 = blob.filename();
+        String contents = blob.contents();
         File f = join(CWD, filename);
         writeContents(f, contents);
 
     }
 
     public static void branch(String branchname) {
-        File Head = join(BRANCH_DIR, readContentsAsString(HEAD));
-        String curSHA1 = readContentsAsString(Head);
+        File head = join(BRANCH_DIR, readContentsAsString(HEAD));
+        String curSHA1 = readContentsAsString(head);
         File f = new File(BRANCH_DIR, branchname);
         writeContents(f, curSHA1);
     }
@@ -312,8 +313,8 @@ public class Commands implements Serializable {
     }
 
     public static void status() {
-        Stage add = readObject(addFile, Stage.class);
-        Stage remove = readObject(removeFile, Stage.class);
+        Stage add = readObject(ADDFILE, Stage.class);
+        Stage remove = readObject(REMOVEFILE, Stage.class);
 
         Set<String> addset = add.keySet();
         Set<String> rmset = remove.keySet();
@@ -329,7 +330,6 @@ public class Commands implements Serializable {
 
         //Branch section
         System.out.println("=== Branches ===");
-        if (branchList.size() == 0) System.out.println("!!!");
         for (String branch: branchList) {
             if (branch.equals(currentBranch)) {
                 System.out.println("*" + branch);

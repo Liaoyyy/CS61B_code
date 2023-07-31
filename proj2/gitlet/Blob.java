@@ -11,9 +11,9 @@ import static gitlet.Utils.readContents;
 public class Blob implements Serializable {
 
     /** The filename of this Blob */
-    public String filename;
+    private String filename;
     /** The contents of this Blob */
-    public String contents;
+    private String contents;
 
 
     /**Create a new bolb */
@@ -48,6 +48,13 @@ public class Blob implements Serializable {
         return readObject(f, Blob.class);
     }
 
+    public  String filename() {
+        return this.filename;
+    }
+
+    public String contents() {
+        return this.contents;
+    }
 
 
 }

@@ -6,17 +6,15 @@ import java.util.List;
 
 import static gitlet.Utils.*;
 
-// TODO: any imports you need here
 
 /** Represents a gitlet repository.
- *  TODO: It's a good idea to give a description here of what else this Class
+ *
  *  does at a high level.
  *
- *  @author TODO
+ *  @author
  */
 public class Repository {
     /**
-     * TODO: add instance variables here.
      *
      * List all instance variables of the Repository class here with a useful
      * comment above them describing what that variable represents and how that
@@ -50,9 +48,9 @@ public class Repository {
     /** The HEAD file records sha1 of current commit */
     public static final File HEAD = join(GITLET_DIR, "HEAD");
     /** The add file contains the hashmap of the blobs staged for addition */
-    public static final File addFile = join(ADDITION, "add");
+    public static final File ADDFILE = join(ADDITION, "add");
     /** The remove file contains the hashmap of blobs staged for removal */
-    public static final File removeFile = join(REMOVAL, "remove");
+    public static final File REMOVEFILE = join(REMOVAL, "remove");
     /** The master brancn file */
     public static final File MASTER = join(BRANCH_DIR, "master");
 
@@ -77,12 +75,12 @@ public class Repository {
             throw new RuntimeException(e);
         }
         try {
-            addFile.createNewFile();
+            ADDFILE.createNewFile();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
         try {
-            removeFile.createNewFile();
+            REMOVEFILE.createNewFile();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -100,8 +98,8 @@ public class Repository {
     }
 
     /** Delete the file in path with SHA1 */
-    public static void deleteFile(File path, String SHA1) {
-        File f = join(path, SHA1);
+    public static void deleteFile(File path, String Sha1) {
+        File f = join(path, Sha1);
         f.delete();
     }
 
