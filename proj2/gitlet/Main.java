@@ -30,6 +30,10 @@ public class Main {
                 break;
             case "add":
                 validateNumArgs(args, 2);
+                if (!GITLET_DIR.exists()) {
+                    System.out.println("Not in an initialized Gitlet directory.");
+                    System.exit(0);
+                }
                 String filename1 = args[1];
                 add(filename1);
                 break;
@@ -39,32 +43,60 @@ public class Main {
                     System.exit(0);
                 }
                 String message = args[1];
+                if (!GITLET_DIR.exists()) {
+                    System.out.println("Not in an initialized Gitlet directory.");
+                    System.exit(0);
+                }
                 commit(message);
                 break;
             case "rm":
                 validateNumArgs(args, 2);
+                if (!GITLET_DIR.exists()) {
+                    System.out.println("Not in an initialized Gitlet directory.");
+                    System.exit(0);
+                }
                 String filename2 = args[1];
                 rm(filename2);
                 break;
             case "log":
                 validateNumArgs(args, 1);
+                if (!GITLET_DIR.exists()) {
+                    System.out.println("Not in an initialized Gitlet directory.");
+                    System.exit(0);
+                }
                 log();
                 break;
             case "global-log":
                 validateNumArgs(args, 1);
+                if (!GITLET_DIR.exists()) {
+                    System.out.println("Not in an initialized Gitlet directory.");
+                    System.exit(0);
+                }
                 globalLog();
                 break;
             case "find":
                 validateNumArgs(args, 2);
+                if (!GITLET_DIR.exists()) {
+                    System.out.println("Not in an initialized Gitlet directory.");
+                    System.exit(0);
+                }
                 String commitMessage = args[1];
                 find(commitMessage);
                 break;
             case "status":
                 validateNumArgs(args, 1);
+                if (!GITLET_DIR.exists()) {
+                    System.out.println("Not in an initialized Gitlet directory.");
+                    System.exit(0);
+                }
                 status();
                 break;
             case "checkout":
                 int length = args.length;
+                if (!GITLET_DIR.exists()) {
+                    System.out.println("Not in an initialized Gitlet directory.");
+                    System.exit(0);
+                }
                 switch(length) {
                     case 3:
                         if (!args[1].equals("--")){
@@ -94,11 +126,19 @@ public class Main {
                 break;
             case "branch":
                 validateNumArgs(args, 2);
+                if (!GITLET_DIR.exists()) {
+                    System.out.println("Not in an initialized Gitlet directory.");
+                    System.exit(0);
+                }
                 String branchname1 = args[1];
                 branch(branchname1);
                 break;
             case "rm-branch":
                 validateNumArgs(args, 2);
+                if (!GITLET_DIR.exists()) {
+                    System.out.println("Not in an initialized Gitlet directory.");
+                    System.exit(0);
+                }
                 String branchname2 = args[1];
                 rmbranch(branchname2);
                 break;
