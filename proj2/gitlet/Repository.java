@@ -98,8 +98,8 @@ public class Repository {
     }
 
     /** Delete the file in path with SHA1 */
-    public static void deleteFile(File path, String Sha1) {
-        File f = join(path, Sha1);
+    public static void deleteFile(File path, String sha1) {
+        File f = join(path, sha1);
         f.delete();
     }
 

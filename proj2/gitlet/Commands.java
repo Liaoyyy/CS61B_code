@@ -14,8 +14,8 @@ public class Commands implements Serializable {
     /**Initialize the gitlet directory */
     public static void init() {
         if (GITLET_DIR.exists()) {
-            System.out.println("A Gitlet version-control system already " +
-                    "exists in the current directory.");
+            System.out.println("A Gitlet version-control system already "
+                    + "exists in the current directory.");
             System.exit(0);
         }
         //create necessary files and dirs
@@ -91,14 +91,18 @@ public class Commands implements Serializable {
             System.exit(0);
         }
 
-        File f = join(CWD, filename);
-        Blob blob = new Blob(f);
-        String Sha1 = blob.blobSHA1();
         Stage remove = readObject(REMOVEFILE, Stage.class);
-        remove.putBlob(filename, Sha1);
-        deleteFile(CWD, filename);
+        File f = join(CWD, filename);
+        if (f.exists()) {
+            deleteFile(CWD, filename);
+        }
+        String sha1 = head.getBlobSHA1(filename);
+        Blob blob = readObject(join(BLOBS_DIR, sha1), Blob.class);
+        remove.putBlob(filename, sha1);
         blob.saveBlob(REMOVAL);
         writeObject(REMOVEFILE, remove);
+
+
     }
 
     public static void commit(String message) {
@@ -217,8 +221,8 @@ public class Commands implements Serializable {
         for (String curFile: curList) {
             if (currentCommit.getBlobSHA1(curFile) == null) {
                 System.out.println(curFile);
-                System.out.println("There is an untracked file in the way; " +
-                        "delete it, or add and commit it first.");
+                System.out.println("There is an untracked file in the way; "
+                        + "delete it, or add and commit it first.");
                 System.exit(0);
             }
         }
@@ -226,20 +230,8 @@ public class Commands implements Serializable {
         // Empty the ADDITION and REMOVAL dir
         Stage add = readObject(ADDFILE, Stage.class);
         Stage remove = readObject(REMOVEFILE, Stage.class);
-        Set<String> addset = add.keySet();
-        Set<String> rmset = remove.keySet();
-        List<String> addList = new ArrayList<String>(addset);
-        List<String> rmList = new ArrayList<String>(rmset);
-        for (String addfile: addList) {
-            String sha1 = add.getSHA1(addfile);
-            deleteFile(ADDITION, sha1);
-            add.rmBlob(addfile);
-        }
-        for (String rmfile: rmList) {
-            String sha1 = add.getSHA1(rmfile);
-            deleteFile(REMOVAL, sha1);
-            remove.rmBlob(rmfile);
-        }
+        add.emptyDir(ADDITION);
+        remove.emptyDir((REMOVAL));
 
         // Overwrite
         Collection<String> sha1s = branchCommit.hashmap().values();
@@ -268,10 +260,11 @@ public class Commands implements Serializable {
         Commit C = null;
         if (commitID.length() == 40) {
             C = readCommit(commitID);
-        } else if (commitID.length() == 6) {
+        } else if (commitID.length() < 40 && commitID.length() >= 6) {
+            int length = commitID.length();
             List<String> commitList = plainFilenamesIn(COMMITS_DIR);
             for (String commitName: commitList) {
-                String subName = commitName.substring(0,6);
+                String subName = commitName.substring(0, length);
                 if (subName.equals(commitID)) {
                     C = readCommit(commitName);
                 }
@@ -293,7 +286,6 @@ public class Commands implements Serializable {
         }
 
         Blob blob = readBlob(targetSHA1);
-        String filename1 = blob.filename();
         String contents = blob.contents();
         File f = join(CWD, filename);
         writeContents(f, contents);
@@ -360,6 +352,61 @@ public class Commands implements Serializable {
         //Untracked files
         System.out.println("=== Untracked Files ===");
         System.out.println();
+    }
+
+    public static void reset(String commitID) {
+        String commitSha1 = null;
+        if (commitID.length() == 40) {
+            commitSha1 = commitID;
+        } else if (commitID.length() < 40) {
+            int length = commitID.length();
+            List<String> commitList = plainFilenamesIn(COMMITS_DIR);
+            for (String commitName: commitList) {
+                String subName = commitName.substring(0, length);
+                if (subName.equals(commitID)) {
+                    commitSha1 = commitName;
+                }
+            }
+        } else {
+            System.out.println("No commit with that id exists.");
+            System.exit(0);
+        }
+
+        File f = new File(COMMITS_DIR, commitSha1);
+        if (!f.exists()) {
+            System.out.println("No commit with that id exists.");
+            System.exit(0);
+        }
+
+        // Reset commit c
+        Commit c = readObject(f, Commit.class);
+        f.delete();
+        List<String> curList = plainFilenamesIn(CWD);
+        for (String fileName: curList) {
+            if (c.getBlobSHA1(fileName) == null) {
+                System.out.println("There is an untracked file in the way; "
+                        + "delete it, or add and commit it first");
+                System.exit(0);
+            }
+        }
+
+        List<String> fileListInCommit = new ArrayList<String>(c.hashmap().keySet());
+        for (String file: fileListInCommit) {
+            if (!curList.contains(file)) {
+                c.rmBlob(file);
+            }
+        }
+        c.saveCommit();
+        // Empty the ADDITION and REMOVAL dir
+        Stage add = readObject(ADDFILE, Stage.class);
+        Stage remove = readObject(REMOVEFILE, Stage.class);
+        add.emptyDir(ADDITION);
+        remove.emptyDir((REMOVAL));
+
+        // Move the current branch's head to this commit
+        String curBranch = readContentsAsString(HEAD);
+        File branchHead = join(BRANCH_DIR, curBranch);
+        writeContents(branchHead, commitSha1);
     }
 }
 

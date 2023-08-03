@@ -142,6 +142,15 @@ public class Main {
                 String branchname2 = args[1];
                 rmbranch(branchname2);
                 break;
+            case "reset":
+                validateNumArgs(args, 2);
+                if (!GITLET_DIR.exists()) {
+                    System.out.println("Not in an initialized Gitlet directory.");
+                    System.exit(0);
+                }
+                String commitID = args[1];
+                reset(commitID);
+                break;
             default:
                 System.out.println("No command with that name exists.");
                 System.exit(-1);

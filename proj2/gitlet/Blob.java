@@ -36,9 +36,9 @@ public class Blob implements Serializable {
     /** Save the Blob into file with the name of its SHA1 */
     public void saveBlob(File path) {
         //get the sha1 of this commit
-        String SHA1 = blobSHA1();
+        String sha1 = blobSHA1();
 
-        File blobFile = new File(path, SHA1);
+        File blobFile = new File(path, sha1);
         writeObject(blobFile, this);
     }
 

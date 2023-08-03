@@ -75,8 +75,8 @@ public class Commit implements Serializable {
     }
 
     /** add Blob to the hashmap */
-    public void addBlob(String filename, String Sha1) {
-        hashmap.put(filename, Sha1);
+    public void addBlob(String filename, String sha1) {
+        hashmap.put(filename, sha1);
     }
 
     /** rm Blob to the hashmap */
@@ -84,7 +84,9 @@ public class Commit implements Serializable {
         hashmap.remove(filename);
     }
 
-    /** get the SHA1 of Blob named filename inside hashmap */
+    /** get the SHA1 of Blob named filename inside hashmap
+     *  return null if this commit contains no mapping for the file.
+     * */
     public String getBlobSHA1(String filename) {
         return hashmap.get(filename);
     }
@@ -102,10 +104,10 @@ public class Commit implements Serializable {
         //get the sha1 of this commit
         File f = new File(COMMITS_DIR, "temp");
         writeObject(f, this);
-        String Sha1 = sha1(readContents(f));
+        String sha1 = sha1(readContents(f));
         f.delete();
 
-        File commitFile = new File(COMMITS_DIR, Sha1);
+        File commitFile = new File(COMMITS_DIR, sha1);
         writeObject(commitFile, this);
     }
 

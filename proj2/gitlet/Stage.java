@@ -1,9 +1,14 @@
 package gitlet;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import static gitlet.Repository.deleteFile;
+import static gitlet.Utils.*;
 
 public class Stage implements Serializable {
     /** The hashmap records the list of blobs to add/remove */
@@ -46,5 +51,19 @@ public class Stage implements Serializable {
     public Set<String> keySet() {
         return hashmap.keySet();
     }
+
+    /** Empty ADDITION or REMOVAL dir */
+    public void emptyDir(File path) {
+        List<String> fileList = plainFilenamesIn(path);
+        for (String file: fileList) {
+            if (file.equals("add") || file.equals("remove")) {
+                continue;
+            }
+            String sha1 = this.getSHA1(file);
+            deleteFile(path, sha1);
+            this.rmBlob(file);
+        }
+    }
+
 
 }
