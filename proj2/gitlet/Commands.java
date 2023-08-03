@@ -380,7 +380,7 @@ public class Commands implements Serializable {
 
         // Reset commit c
         Commit c = readObject(f, Commit.class);
-        f.delete();
+
         List<String> curList = plainFilenamesIn(CWD);
         for (String fileName: curList) {
             if (c.getBlobSHA1(fileName) == null) {
@@ -396,7 +396,7 @@ public class Commands implements Serializable {
                 c.rmBlob(file);
             }
         }
-        c.saveCommit();
+        c.saveCommit(f);
         // Empty the ADDITION and REMOVAL dir
         Stage add = readObject(ADDFILE, Stage.class);
         Stage remove = readObject(REMOVEFILE, Stage.class);

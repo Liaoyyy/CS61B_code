@@ -111,6 +111,11 @@ public class Commit implements Serializable {
         writeObject(commitFile, this);
     }
 
+    /** Save the Commit without change the name of this file */
+    public void saveCommit(File file) {
+        writeObject(file, this);
+    }
+
     /** Read the Commit from the file named sha1 */
     public static Commit readCommit(String sha1) {
         File f = join(COMMITS_DIR, sha1);
