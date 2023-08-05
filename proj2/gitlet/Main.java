@@ -151,6 +151,11 @@ public class Main {
                 String commitID = args[1];
                 reset(commitID);
                 break;
+            case "merge":
+                validateNumArgs(args, 2);
+                String branchName = args[1];
+                merge(branchName);
+                break;
             default:
                 System.out.println("No command with that name exists.");
                 System.exit(-1);

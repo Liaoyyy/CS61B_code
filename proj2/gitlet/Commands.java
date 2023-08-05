@@ -412,5 +412,9 @@ public class Commands implements Serializable {
         File branchHead = join(BRANCH_DIR, curBranch);
         writeContents(branchHead, commitSha1);
     }
+
+    public static void merge(String branchName) {
+
+    }
 }
 
