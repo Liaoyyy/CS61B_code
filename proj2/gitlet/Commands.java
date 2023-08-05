@@ -379,33 +379,44 @@ public class Commands implements Serializable {
         }
 
         // Reset commit c
-        Commit c = readObject(f, Commit.class);
-
+        Commit resetCommit = readObject(f, Commit.class);
+        File curf = join(BRANCH_DIR, readContentsAsString(HEAD));
+        String curSha1 = readContentsAsString(curf);
+        Commit currentCommit = readCommit(curSha1);
         List<String> curList = plainFilenamesIn(CWD);
-        for (String fileName: curList) {
-            if (c.getBlobSHA1(fileName) == null) {
+        for (String curFile: curList) {
+            if (currentCommit.getBlobSHA1(curFile) == null) {
+                System.out.println(curFile);
                 System.out.println("There is an untracked file in the way; "
-                        + "delete it, or add and commit it first");
+                        + "delete it, or add and commit it first.");
                 System.exit(0);
             }
         }
 
-        List<String> fileListInCommit = new ArrayList<String>(c.hashmap().keySet());
-        for (String file: fileListInCommit) {
-            if (!curList.contains(file)) {
-                c.rmBlob(file);
-            }
-        }
-
-        /** Though the contents of this commit is changed,
-         * we don't hope to change the filename of this commit
-         */
-        c.saveCommit(f);
         // Empty the ADDITION and REMOVAL dir
         Stage add = readObject(ADDFILE, Stage.class);
         Stage remove = readObject(REMOVEFILE, Stage.class);
         add.emptyDir(ADDITION);
         remove.emptyDir((REMOVAL));
+
+        // Overwrite
+        Collection<String> sha1s = resetCommit.hashmap().values();
+        Iterator<String> shaIterator = sha1s.iterator();
+        while (shaIterator.hasNext()) {
+            String sha1 = shaIterator.next();
+            Blob b = readBlob(sha1);
+            String filename = b.filename();
+            String contents = b.contents();
+            File temp = join(CWD, filename);
+            writeContents(temp, contents);
+        }
+
+        // Delete the file untracked in check-out branch
+        for (String curFile: curList) {
+            if (resetCommit.getBlobSHA1(curFile) == null) {
+                deleteFile(CWD, curFile);
+            }
+        }
 
         // Move the current branch's head to this commit
         String curBranch = readContentsAsString(HEAD);
