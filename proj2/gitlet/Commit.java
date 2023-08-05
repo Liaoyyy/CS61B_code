@@ -113,6 +113,7 @@ public class Commit implements Serializable {
 
     /** Save the Commit without change the name of this file */
     public void saveCommit(File file) {
+        writeContents(file, "");
         writeObject(file, this);
     }
 
@@ -132,6 +133,7 @@ public class Commit implements Serializable {
         System.out.println("commit " + commitSHA1());
         System.out.println("Date: " + dateFormat.format(date));
         System.out.println(this.message);
+        System.out.println(this.hashmap.toString());
         System.out.println();
     }
 

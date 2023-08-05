@@ -396,6 +396,10 @@ public class Commands implements Serializable {
                 c.rmBlob(file);
             }
         }
+
+        /** Though the contents of this commit is changed,
+         * we don't hope to change the filename of this commit
+         */
         c.saveCommit(f);
         // Empty the ADDITION and REMOVAL dir
         Stage add = readObject(ADDFILE, Stage.class);
