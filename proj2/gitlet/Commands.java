@@ -131,7 +131,6 @@ public class Commands implements Serializable {
             Blob blob = readObject(f, Blob.class);
             f.delete();
             blob.saveBlob(BLOBS_DIR);
-
         }
 
 
@@ -219,7 +218,7 @@ public class Commands implements Serializable {
         Commit currentCommit = readCommit(curSha1);
         List<String> curList = plainFilenamesIn(CWD);
         for (String curFile: curList) {
-            if (currentCommit.getBlobSHA1(curFile) == null) {
+            if (currentCommit.getBlobSHA1(curFile) == null && branchCommit.getBlobSHA1(curFile) != null) {
                 System.out.println(curFile);
                 System.out.println("There is an untracked file in the way; "
                         + "delete it, or add and commit it first.");
@@ -232,6 +231,8 @@ public class Commands implements Serializable {
         Stage remove = readObject(REMOVEFILE, Stage.class);
         add.emptyDir(ADDITION);
         remove.emptyDir((REMOVAL));
+        writeObject(ADDFILE, add);
+        writeObject(REMOVEFILE, remove);
 
         // Overwrite
         Collection<String> sha1s = branchCommit.hashmap().values();
@@ -247,7 +248,7 @@ public class Commands implements Serializable {
 
         // Delete the file untracked in check-out branch
         for (String curFile: curList) {
-            if (branchCommit.getBlobSHA1(curFile) == null) {
+            if (branchCommit.getBlobSHA1(curFile) == null && currentCommit.getBlobSHA1(curFile) != null) {
                 deleteFile(CWD, curFile);
             }
         }
@@ -378,14 +379,14 @@ public class Commands implements Serializable {
             System.exit(0);
         }
 
-        // Reset commit c
+        // Reset commit resetCommit
         Commit resetCommit = readObject(f, Commit.class);
         File curf = join(BRANCH_DIR, readContentsAsString(HEAD));
         String curSha1 = readContentsAsString(curf);
         Commit currentCommit = readCommit(curSha1);
         List<String> curList = plainFilenamesIn(CWD);
         for (String curFile: curList) {
-            if (currentCommit.getBlobSHA1(curFile) == null) {
+            if (currentCommit.getBlobSHA1(curFile) == null && resetCommit.getBlobSHA1(curFile) != null) {
                 System.out.println(curFile);
                 System.out.println("There is an untracked file in the way; "
                         + "delete it, or add and commit it first.");
@@ -398,6 +399,8 @@ public class Commands implements Serializable {
         Stage remove = readObject(REMOVEFILE, Stage.class);
         add.emptyDir(ADDITION);
         remove.emptyDir((REMOVAL));
+        writeObject(ADDFILE, add);
+        writeObject(REMOVEFILE, remove);
 
         // Overwrite
         Collection<String> sha1s = resetCommit.hashmap().values();
@@ -411,9 +414,9 @@ public class Commands implements Serializable {
             writeContents(temp, contents);
         }
 
-        // Delete the file untracked in check-out branch
+        // Delete the file untracked in checked commit
         for (String curFile: curList) {
-            if (resetCommit.getBlobSHA1(curFile) == null) {
+            if (resetCommit.getBlobSHA1(curFile) == null && currentCommit.getBlobSHA1(curFile) != null) {
                 deleteFile(CWD, curFile);
             }
         }

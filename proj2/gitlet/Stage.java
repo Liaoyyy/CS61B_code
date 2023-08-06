@@ -2,10 +2,7 @@ package gitlet;
 
 import java.io.File;
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static gitlet.Repository.deleteFile;
 import static gitlet.Utils.*;
@@ -54,12 +51,12 @@ public class Stage implements Serializable {
 
     /** Empty ADDITION or REMOVAL dir */
     public void emptyDir(File path) {
-        List<String> fileList = plainFilenamesIn(path);
+        List<String> fileList = new ArrayList<>(hashmap.keySet());
+        if (fileList.isEmpty()) {
+            return;
+        }
         for (String file: fileList) {
-            if (file.equals("add") || file.equals("remove")) {
-                continue;
-            }
-            String sha1 = this.getSHA1(file);
+            String sha1 = this.hashmap.get(file);
             deleteFile(path, sha1);
             this.rmBlob(file);
         }
