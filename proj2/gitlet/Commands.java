@@ -294,14 +294,29 @@ public class Commands implements Serializable {
     }
 
     public static void branch(String branchname) {
+        File f = new File(BRANCH_DIR, branchname);
+        if (f.exists()) {
+            System.out.println("A branch with that name already exists.");
+            System.exit(0);
+        }
+
         File head = join(BRANCH_DIR, readContentsAsString(HEAD));
         String curSHA1 = readContentsAsString(head);
-        File f = new File(BRANCH_DIR, branchname);
         writeContents(f, curSHA1);
     }
 
     public static void rmbranch(String branchname) {
-        File f = join(REFERENCE_DIR, branchname);
+        File f = join(BRANCH_DIR, branchname);
+        if (!f.exists()) {
+            System.out.println("A branch with that name does not exist.");
+            System.exit(0);
+        }
+
+        String curBranch = readContentsAsString(HEAD);
+        if (curBranch.equals(branchname)) {
+            System.out.println("Cannot remove the current branch.");
+            System.exit(0);
+        }
         f.delete();
     }
 
