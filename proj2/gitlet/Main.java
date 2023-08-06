@@ -19,7 +19,7 @@ public class Main {
     public static void main(String[] args) {
     if (args.length == 0){
         System.out.println("Please enter a command.");
-        System.exit(-1);
+        System.exit(0);
     }
 
         String cmd = args[0];
@@ -158,7 +158,7 @@ public class Main {
                 break;
             default:
                 System.out.println("No command with that name exists.");
-                System.exit(-1);
+                System.exit(0);
         }
     }
 

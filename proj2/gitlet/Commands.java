@@ -219,7 +219,6 @@ public class Commands implements Serializable {
         List<String> curList = plainFilenamesIn(CWD);
         for (String curFile: curList) {
             if (currentCommit.getBlobSHA1(curFile) == null && branchCommit.getBlobSHA1(curFile) != null) {
-                System.out.println(curFile);
                 System.out.println("There is an untracked file in the way; "
                         + "delete it, or add and commit it first.");
                 System.exit(0);
@@ -443,6 +442,64 @@ public class Commands implements Serializable {
     }
 
     public static void merge(String branchName) {
+        // Failure check and initialization
+        Stage add = readObject(ADDFILE, Stage.class);
+        Stage remove = readObject(REMOVEFILE, Stage.class);
+        if (!add.isEmpty() || !remove.isEmpty()) {
+            System.out.println("You have uncommitted changes.");
+            System.exit(0);
+        }
+
+        File branchFile = join(BRANCH_DIR, branchName);
+        if (!branchFile.exists()) {
+            System.out.println("A branch with that name does not exist.");
+            System.exit(0);
+        }
+        if (readContentsAsString(HEAD).equals(branchName)) {
+            System.out.println("Cannot merge a branch with itself.");
+            System.exit(0);
+        }
+        File head = join(BRANCH_DIR, readContentsAsString(HEAD));
+        Commit currentCommit = readCommit(readContentsAsString(head));
+        Commit branchCommit = readCommit(readContentsAsString(branchFile));
+
+        // Find the split point
+        Commit splitPoint = null;
+        Commit reCurrent = currentCommit;
+        Commit reBranch = branchCommit;
+        List<String> curCommitList = new ArrayList<>();
+        Set<String> brCommitList = new HashSet<>();
+        curCommitList.add(0, readContentsAsString(head));
+        brCommitList.add(readContentsAsString(branchFile));
+        while (reCurrent.parentID() != null) {
+            curCommitList.add(0,reCurrent.parentID());
+            reCurrent = readCommit(reCurrent.parentID());
+        }
+        while (reBranch.parentID() != null) {
+            brCommitList.add(reBranch.parentID());
+            reBranch = readCommit(reBranch.parentID());
+        }
+        for (int i =curCommitList.size()-1; i > 0; i--) {
+            if (brCommitList.contains(curCommitList.get(i))) {
+                splitPoint = readCommit(curCommitList.get(i));
+                break;
+            }
+        }
+
+        // splitPoint check
+        if (splitPoint.equals(currentCommit)) {
+            checkoutBranch(branchName);
+            System.out.println("Current branch fast-forwarded.");
+            System.exit(0);
+        } else if (splitPoint.equals(branchCommit)) {
+            System.out.println("Given branch is an ancestor of the current branch.");
+            System.exit(0);
+        }
+
+
+        // start to merge
+        
+
 
     }
 }

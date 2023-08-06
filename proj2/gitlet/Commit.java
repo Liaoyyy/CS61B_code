@@ -28,6 +28,8 @@ public class Commit implements Serializable {
     private String message;
     /** Record the parent reference(SHA1) of current commit*/
     private String parentID;
+    /** Record the second parent reference(SHA1) of current commit*/
+    private String parentID2;
     /** Record the date of this Commit*/
     private Date date;
     /** The hashmap of the blobs list
@@ -41,8 +43,14 @@ public class Commit implements Serializable {
         this.parentID = parentId;
         this.hashmap = getParentHashmap();
         this.date = getDate();
+        this.parentID2 = null;
     }
 
+
+    /** add parentID2 */
+    public void addParentID2(String parentID2) {
+        this.parentID2 = parentID2;
+    }
 
     /** get the Date information*/
     private Date getDate() {
@@ -111,11 +119,6 @@ public class Commit implements Serializable {
         writeObject(commitFile, this);
     }
 
-    /** Save the Commit without change the name of this file */
-    public void saveCommit(File file) {
-        writeContents(file, "");
-        writeObject(file, this);
-    }
 
     /** Read the Commit from the file named sha1 */
     public static Commit readCommit(String sha1) {
@@ -142,7 +145,7 @@ public class Commit implements Serializable {
         return this.hashmap;
     }
 
-    /** return parendID */
+    /** return parentID */
     public String parentID() {
         return this.parentID;
     }
@@ -150,5 +153,17 @@ public class Commit implements Serializable {
     /** return message */
     public String message() {
         return this.message;
+    }
+
+    /** RETURN parentID2 */
+    public String parentID2() {return this.parentID2;}
+
+    @Override
+    public boolean equals(Object o){
+        Commit other = (Commit) o;
+        if (this.commitSHA1().equals(other.commitSHA1())) {
+            return true;
+        }
+        return false;
     }
 }
