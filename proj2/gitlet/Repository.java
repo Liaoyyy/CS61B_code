@@ -51,9 +51,10 @@ public class Repository {
     public static final File ADDFILE = join(ADDITION, "add");
     /** The remove file contains the hashmap of blobs staged for removal */
     public static final File REMOVEFILE = join(REMOVAL, "remove");
-    /** The master brancn file */
+    /** The master branch file */
     public static final File MASTER = join(BRANCH_DIR, "master");
-
+    /** The commit graph file */
+    public static final File COMMITGRAPH = join(OBJECTS, "commitGraph");
 
 
 
@@ -86,6 +87,11 @@ public class Repository {
         }
         try {
             MASTER.createNewFile();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            COMMITGRAPH.createNewFile();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

@@ -21,11 +21,14 @@ public class Commands implements Serializable {
         //create necessary files and dirs
         setupPersistence();
 
-        // creat initial commit0
+        // create initial commit0
         Commit init = new Commit("initial commit", null);
         writeContents(MASTER, init.commitSHA1());
         writeContents(HEAD, MASTER.getName());
         init.saveCommit();
+
+        // init commit graph
+        Graph commitgraph = new Graph();
 
         // create stage class (add+remove)
         Stage add = new Stage();
