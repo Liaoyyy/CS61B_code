@@ -1,7 +1,8 @@
 package gitlet;
 
-import java.util.Collection;
-import java.util.Iterator;
+import java.util.*;
+
+import static gitlet.Commit.readCommit;
 
 public class MyUtils {
     public static class BFS {
@@ -21,21 +22,49 @@ public class MyUtils {
         }
 
         public String SplitPoint(Collection<String> collection) {
-
+            int resultIndex = findSplitPoint(vertex, collection);
+            if (resultIndex != -1) {
+                return G.index2name(resultIndex);
+            }
             return null;
         }
 
         private int findSplitPoint(String vertexName, Collection<String> collection) {
+            Queue<Integer> fringe = new PriorityQueue<Integer>();
+
             int index = G.name2index(vertexName);
             marked[index] = true;
-            for (int w: G.adj(index)) {
-                if(!marked[w]) {
-                    if (collection.contains(G.index2name(w))) {
-                        return w;
+            fringe.add(index);
+            while (!fringe.isEmpty()) {
+                int v = fringe.remove();
+                for (int w: G.adj(v)) {
+                    if (!marked[w]) {
+                        fringe.add(w);
+                        marked[w] = true;
+                        edgeTo[w] = G.index2name(v);
+                        if (collection.contains(G.index2name(w))) {
+                            return w;
+                        }
                     }
                 }
             }
             return -1;
+
         }
+    }
+
+    public static HashSet<String> paths(String startSha1) {
+        HashSet<String> branch2init = new HashSet<>();
+        branch2init.add(startSha1);
+        Commit flag = readCommit(startSha1);
+        while (flag != null) {
+            branch2init.add(flag.parentID());
+            HashSet<String> newbranch = null;
+            if (flag.parentID2() != null) {
+                newbranch = paths(flag.parentID2());
+            }
+            branch2init.addAll(newbranch);
+        }
+        return branch2init;
     }
 }

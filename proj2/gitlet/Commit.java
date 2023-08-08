@@ -38,12 +38,12 @@ public class Commit implements Serializable {
     private HashMap<String, String> hashmap;
 
 
-    public Commit(String message, String parentId) {
+    public Commit(String message, String parentId, String parentID2) {
         this.message = message;
         this.parentID = parentId;
         this.hashmap = getParentHashmap();
         this.date = getDate();
-        this.parentID2 = null;
+        this.parentID2 = parentID2;
     }
 
 

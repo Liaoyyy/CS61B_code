@@ -2,7 +2,6 @@ package gitlet;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 
 public class Graph implements Serializable {
     private ArrayList<String> vertexList;
@@ -78,22 +77,26 @@ public class Graph implements Serializable {
         g.addVertex("e");
         g.addVertex("f");
         g.addVertex("g");
-        g.addVertex("h");
-        g.addVertex("i");
-        g.addVertex("j");
-        g.addVertex("k");
+
+        ArrayList<String> list = new ArrayList<>();
+        list.add("f");
+        list.add("c");
+        list.add("e");
+        list.add("g");
 
         g.addEdge("a", "b");
-        g.addEdge("a", "b");
-        g.addEdge("a", "b");
-        g.addEdge("a", "d");
-        g.addEdge("b", "c");
-        g.addEdge("c", "d");
-        g.addEdge("d", "e");
+        g.addEdge("a", "g");
+        g.addEdge("b", "d");
+        g.addEdge("c", "b");
+        g.addEdge("c", "g");
+        g.addEdge("c", "e");
+        g.addEdge("e", "f");
+        g.addEdge("f", "g");
 
-        for (int i: g.adj(0)) {
-            System.out.println(i);
-        }
+        MyUtils.BFS b = new MyUtils.BFS(g, "b");
+        String splitPoint = b.SplitPoint(list);
+        System.out.println(splitPoint);
 
+        System.out.println("Hello this is a test \n hahaha");
     }
 }

@@ -8,6 +8,7 @@ import static gitlet.Repository.*;
 import static gitlet.Blob.*;
 import static gitlet.Utils.*;
 import static gitlet.Commit.*;
+import static gitlet.MyUtils.*;
 
 public class Commands implements Serializable {
 
@@ -22,7 +23,7 @@ public class Commands implements Serializable {
         setupPersistence();
 
         // create initial commit0
-        Commit init = new Commit("initial commit", null);
+        Commit init = new Commit("initial commit", null, null);
         writeContents(MASTER, init.commitSHA1());
         writeContents(HEAD, MASTER.getName());
         init.saveCommit();
@@ -110,7 +111,7 @@ public class Commands implements Serializable {
 
     }
 
-    public static void commit(String message) {
+    public static void commit(String message, String parentID2) {
         Stage add = readObject(ADDFILE, Stage.class);
         Stage remove = readObject(REMOVEFILE, Stage.class);
         File branch = join(BRANCH_DIR, readContentsAsString(HEAD));
@@ -122,7 +123,7 @@ public class Commands implements Serializable {
             System.exit(0);
         }
 
-        Commit newCommit = new Commit(message, parentID);
+        Commit newCommit = new Commit(message, parentID, parentID2);
         Set<String> addset = add.keySet();
         Set<String> rmset = remove.keySet();
         List<String> addList = new ArrayList<String>(addset);
@@ -149,6 +150,9 @@ public class Commands implements Serializable {
 
         commitGraph.addVertex(newCommit.commitSHA1());
         commitGraph.addEdge(newCommit.commitSHA1(), parentID);
+        if (parentID2 != null) {
+            commitGraph.addEdge(newCommit.commitSHA1(), parentID2);
+        }
 
         writeObject(ADDFILE, add);
         writeObject(REMOVEFILE, remove);
@@ -228,7 +232,8 @@ public class Commands implements Serializable {
         Commit currentCommit = readCommit(curSha1);
         List<String> curList = plainFilenamesIn(CWD);
         for (String curFile: curList) {
-            if (currentCommit.getBlobSHA1(curFile) == null && branchCommit.getBlobSHA1(curFile) != null) {
+            if (currentCommit.getBlobSHA1(curFile) == null
+                    && branchCommit.getBlobSHA1(curFile) != null) {
                 System.out.println("There is an untracked file in the way; "
                         + "delete it, or add and commit it first.");
                 System.exit(0);
@@ -257,7 +262,8 @@ public class Commands implements Serializable {
 
         // Delete the file untracked in check-out branch
         for (String curFile: curList) {
-            if (branchCommit.getBlobSHA1(curFile) == null && currentCommit.getBlobSHA1(curFile) != null) {
+            if (branchCommit.getBlobSHA1(curFile) == null
+                    && currentCommit.getBlobSHA1(curFile) != null) {
                 deleteFile(CWD, curFile);
             }
         }
@@ -410,7 +416,8 @@ public class Commands implements Serializable {
         Commit currentCommit = readCommit(curSha1);
         List<String> curList = plainFilenamesIn(CWD);
         for (String curFile: curList) {
-            if (currentCommit.getBlobSHA1(curFile) == null && resetCommit.getBlobSHA1(curFile) != null) {
+            if (currentCommit.getBlobSHA1(curFile) == null
+                    && resetCommit.getBlobSHA1(curFile) != null) {
                 System.out.println(curFile);
                 System.out.println("There is an untracked file in the way; "
                         + "delete it, or add and commit it first.");
@@ -440,7 +447,8 @@ public class Commands implements Serializable {
 
         // Delete the file untracked in checked commit
         for (String curFile: curList) {
-            if (resetCommit.getBlobSHA1(curFile) == null && currentCommit.getBlobSHA1(curFile) != null) {
+            if (resetCommit.getBlobSHA1(curFile) == null
+                    && currentCommit.getBlobSHA1(curFile) != null) {
                 deleteFile(CWD, curFile);
             }
         }
@@ -470,47 +478,101 @@ public class Commands implements Serializable {
             System.exit(0);
         }
         File head = join(BRANCH_DIR, readContentsAsString(HEAD));
-        Commit currentCommit = readCommit(readContentsAsString(head));
-        Commit branchCommit = readCommit(readContentsAsString(branchFile));
-
-        // Find the split point
-        Commit splitPoint = null;
-        Commit reCurrent = currentCommit;
-        Commit reBranch = branchCommit;
-        List<String> curCommitList = new ArrayList<>();
-        Set<String> brCommitList = new HashSet<>();
-        curCommitList.add(0, readContentsAsString(head));
-        brCommitList.add(readContentsAsString(branchFile));
-        while (reCurrent.parentID() != null) {
-            curCommitList.add(0,reCurrent.parentID());
-            reCurrent = readCommit(reCurrent.parentID());
-        }
-        while (reBranch.parentID() != null) {
-            brCommitList.add(reBranch.parentID());
-            reBranch = readCommit(reBranch.parentID());
-        }
-        for (int i =curCommitList.size()-1; i > 0; i--) {
-            if (brCommitList.contains(curCommitList.get(i))) {
-                splitPoint = readCommit(curCommitList.get(i));
-                break;
+        String currentSha1 = readContentsAsString(head);
+        String branchSha1 = readContentsAsString(branchFile);
+        Commit currentCommit = readCommit(currentSha1);
+        Commit branchCommit = readCommit(branchSha1);
+        List<String> curList = plainFilenamesIn(CWD);
+        for (String curFile: curList) {
+            if (currentCommit.getBlobSHA1(curFile) == null
+                    && branchCommit.getBlobSHA1(curFile) != null) {
+                System.out.println(curFile);
+                System.out.println("There is an untracked file in the way; "
+                        + "delete it, or add and commit it first.");
+                System.exit(0);
             }
         }
 
-        // splitPoint check
-        if (splitPoint.equals(currentCommit)) {
+
+        // Find the split point
+        Commit splitCommit = null;
+        Graph G = readObject(COMMITGRAPH, Graph.class);
+        BFS b = new BFS(G, currentSha1);
+        HashSet<String> branch2init = paths(branchSha1);
+        String splitPointSha1 = b.SplitPoint(branch2init);
+        if (splitPointSha1 != null) {
+            splitCommit = readCommit(splitPointSha1);
+        }
+
+        // splitCommit check
+        if (splitCommit.equals(currentCommit)) {
             checkoutBranch(branchName);
             System.out.println("Current branch fast-forwarded.");
             System.exit(0);
-        } else if (splitPoint.equals(branchCommit)) {
+        } else if (splitCommit.equals(branchCommit)) {
             System.out.println("Given branch is an ancestor of the current branch.");
             System.exit(0);
         }
 
 
+        // find the union set
+        Set<String> splitKeySet = splitCommit.hashmap().keySet();
+        Set<String> currentKeySet = currentCommit.hashmap().keySet();
+        Set<String> branchKeySet = branchCommit.hashmap().keySet();
+        Set<String> unionSet = new HashSet<>();
+        unionSet.addAll(splitKeySet);
+        unionSet.addAll(currentKeySet);
+        unionSet.addAll(branchKeySet);
+
         // start to merge
-        
+        for (String filename: unionSet) {
+            String splitBlob = splitCommit.getBlobSHA1(filename);
+            String currentBlob = currentCommit.getBlobSHA1(filename);
+            String branchBlob = branchCommit.getBlobSHA1(filename);
+            if (splitBlob == null) {
+                if (branchBlob != null) {
+                    checkout(branchSha1, filename);
+                    add(filename);
+                }
+            } else {
+                if (splitBlob.equals(currentBlob) && !splitBlob.equals(branchBlob)) {
+                    if (branchBlob != null) {
+                        checkout(branchSha1, filename);
+                        add(filename);
+                    } else {
+                        rm(filename);
+                    }
+                } else if (!splitBlob.equals(currentBlob)) {
+                    // case 2 and case 7
+                    if (splitBlob.equals(branchBlob)) continue;
+                    // case 3
+                    if (Objects.equals(currentBlob, branchBlob)) continue;
+                    // case 8
+                    if (Objects.equals(currentBlob, branchBlob)) {
+                        System.out.println("Encountered a merge conflict.");
+                        System.out.println("<<<<<<< HEAD");
+                        String currentContents = "";
+                        String branchContents = "";
+                        if (currentBlob != null) {
+                            Blob curBlob = readBlob(currentBlob);
+                            currentContents = curBlob.contents();
+                        }
+                        if (branchBlob !=null) {
+                            Blob brBlob = readBlob(branchBlob);
+                            branchContents = brBlob.contents();
+                        }
+                        System.out.println(currentContents + "=======");
+                        System.out.println(branchContents + ">>>>>>>");
 
+                    }
 
+                }
+            }
+        }
+
+        // save Objects
+        commit("Merged " + branchName + "into"
+                + readContentsAsString(HEAD) + ".", branchSha1);
     }
 }
 

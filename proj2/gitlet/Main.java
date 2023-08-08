@@ -47,7 +47,7 @@ public class Main {
                     System.out.println("Not in an initialized Gitlet directory.");
                     System.exit(0);
                 }
-                commit(message);
+                commit(message, null);
                 break;
             case "rm":
                 validateNumArgs(args, 2);
