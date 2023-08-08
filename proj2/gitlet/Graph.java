@@ -1,9 +1,10 @@
 package gitlet;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 
-public class Graph {
+public class Graph implements Serializable {
     private ArrayList<String> vertexList;
     private HashSet<Integer>[] adjList ;
 
@@ -40,28 +41,21 @@ public class Graph {
         adjList[index2].add(index1);
     }
 
-    public Iterator<String> adj(String vertexName) {
-        return new adjIterator(vertexName);
+    public int vertexSize() { return this.vertexSize;}
+
+    public Iterable<Integer> adj(int index) {
+        return adjList[index];
     }
 
-    private class adjIterator implements Iterator<String> {
-        private Iterator<Integer> vertexIterator;
-        public adjIterator(String vertexName) {
-            int index = vertexList.indexOf(vertexName);
-            vertexIterator = adjList[index].iterator();
-        }
-        @Override
-        public boolean hasNext() {
-            return vertexIterator.hasNext();
-        }
-
-        @Override
-        public String next() {
-
-            Integer index = vertexIterator.next();
-            return vertexList.get(index);
-        }
+    public String index2name(int index) {
+        return vertexList.get(index);
     }
+
+    public int name2index(String vertexName) {
+        return vertexList.indexOf(vertexName);
+    }
+
+
     private HashSet<Integer>[] adjListResize(int newSize) {
         HashSet<Integer>[] newAdjList = new HashSet[newSize];
         for (int i = 0; i < vertexSize; i++) {
@@ -97,9 +91,9 @@ public class Graph {
         g.addEdge("c", "d");
         g.addEdge("d", "e");
 
-        Iterator<String> it = g.adj("a");
-        while (it.hasNext()) {
-            System.out.println(it.next());
+        for (int i: g.adj(0)) {
+            System.out.println(i);
         }
+
     }
 }

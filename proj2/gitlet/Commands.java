@@ -29,6 +29,8 @@ public class Commands implements Serializable {
 
         // init commit graph
         Graph commitgraph = new Graph();
+        commitgraph.addVertex(init.commitSHA1());
+        writeObject(COMMITGRAPH, commitgraph);
 
         // create stage class (add+remove)
         Stage add = new Stage();
@@ -113,6 +115,7 @@ public class Commands implements Serializable {
         Stage remove = readObject(REMOVEFILE, Stage.class);
         File branch = join(BRANCH_DIR, readContentsAsString(HEAD));
         String parentID = readContentsAsString(branch);
+        Graph commitGraph = readObject(COMMITGRAPH, Graph.class);
 
         if (add.isEmpty() && remove.isEmpty()) {
             System.out.println("No changes added to the commit.");
@@ -144,9 +147,13 @@ public class Commands implements Serializable {
             deleteFile(REMOVAL, sha1);
         }
 
+        commitGraph.addVertex(newCommit.commitSHA1());
+        commitGraph.addEdge(newCommit.commitSHA1(), parentID);
+
         writeObject(ADDFILE, add);
         writeObject(REMOVEFILE, remove);
         newCommit.saveCommit();
+        writeObject(COMMITGRAPH, commitGraph);
         writeContents(branch, newCommit.commitSHA1());
     }
 
