@@ -498,7 +498,6 @@ public class Commands implements Serializable {
 
             if (splitBlob == null) {
                 if (branchBlob != null) {
-                    System.out.println(branchBlob);
                     checkout(branchSha1, filename);
                     add(filename);
                 }
