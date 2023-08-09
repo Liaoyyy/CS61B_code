@@ -418,7 +418,6 @@ public class Commands implements Serializable {
         for (String curFile: curList) {
             if (currentCommit.getBlobSHA1(curFile) == null
                     && resetCommit.getBlobSHA1(curFile) != null) {
-                System.out.println(curFile);
                 System.out.println("There is an untracked file in the way; "
                         + "delete it, or add and commit it first.");
                 System.exit(0);
