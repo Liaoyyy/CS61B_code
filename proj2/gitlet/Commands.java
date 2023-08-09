@@ -461,38 +461,15 @@ public class Commands implements Serializable {
 
     public static void merge(String branchName) {
         // Failure check and initialization
-        Stage add = readObject(ADDFILE, Stage.class);
-        Stage remove = readObject(REMOVEFILE, Stage.class);
-        if (!add.isEmpty() || !remove.isEmpty()) {
-            System.out.println("You have uncommitted changes.");
-            System.exit(0);
-        }
-
+        mergeFailureCheck(branchName);
         File branchFile = join(BRANCH_DIR, branchName);
-        if (!branchFile.exists()) {
-            System.out.println("A branch with that name does not exist.");
-            System.exit(0);
-        }
-        if (readContentsAsString(HEAD).equals(branchName)) {
-            System.out.println("Cannot merge a branch with itself.");
-            System.exit(0);
-        }
         File head = join(BRANCH_DIR, readContentsAsString(HEAD));
         String currentSha1 = readContentsAsString(head);
         String branchSha1 = readContentsAsString(branchFile);
+
         Commit currentCommit = readCommit(currentSha1);
         Commit branchCommit = readCommit(branchSha1);
-        List<String> curList = plainFilenamesIn(CWD);
-        for (String curFile: curList) {
-            if (currentCommit.getBlobSHA1(curFile) == null
-                    && branchCommit.getBlobSHA1(curFile) != null) {
-                System.out.println(curFile);
-                System.out.println("There is an untracked file in the way; "
-                        + "delete it, or add and commit it first.");
-                System.exit(0);
-            }
-        }
-
+        untrackedFileCheck(currentCommit, branchCommit);
 
         // Find the split point
         Commit splitCommit = null;
@@ -505,24 +482,13 @@ public class Commands implements Serializable {
         }
 
         // splitCommit check
-        if (splitCommit.equals(currentCommit)) {
-            checkoutBranch(branchName);
-            System.out.println("Current branch fast-forwarded.");
-            System.exit(0);
-        } else if (splitCommit.equals(branchCommit)) {
-            System.out.println("Given branch is an ancestor of the current branch.");
-            System.exit(0);
-        }
-
+        splitCommitCheck(splitCommit, currentCommit, branchCommit, branchName);
 
         // find the union set
         Set<String> splitKeySet = splitCommit.hashmap().keySet();
         Set<String> currentKeySet = currentCommit.hashmap().keySet();
         Set<String> branchKeySet = branchCommit.hashmap().keySet();
-        Set<String> unionSet = new HashSet<>();
-        unionSet.addAll(splitKeySet);
-        unionSet.addAll(currentKeySet);
-        unionSet.addAll(branchKeySet);
+        Set<String> unionSet = setUnion(splitKeySet, currentKeySet, branchKeySet);
 
         // start to merge
         for (String filename: unionSet) {
@@ -546,9 +512,13 @@ public class Commands implements Serializable {
                     }
                 } else if (!splitBlob.equals(currentBlob)) {
                     // case 2 and case 7
-                    if (splitBlob.equals(branchBlob)) continue;
+                    if (splitBlob.equals(branchBlob)) {
+                        continue;
+                    }
                     // case 3
-                    if (Objects.equals(currentBlob, branchBlob)) continue;
+                    if (Objects.equals(currentBlob, branchBlob)) {
+                        continue;
+                    }
                     // case 8
                     if (Objects.equals(currentBlob, branchBlob)) {
                         System.out.println("Encountered a merge conflict.");
@@ -559,21 +529,18 @@ public class Commands implements Serializable {
                             Blob curBlob = readBlob(currentBlob);
                             currentContents = curBlob.contents();
                         }
-                        if (branchBlob !=null) {
+                        if (branchBlob != null) {
                             Blob brBlob = readBlob(branchBlob);
                             branchContents = brBlob.contents();
                         }
                         System.out.println(currentContents + "=======");
                         System.out.println(branchContents + ">>>>>>>");
-
                     }
-
                 }
             }
         }
 
         // save Objects
-        System.out.println("test flag");
         commit("Merged " + branchName + "into"
                 + readContentsAsString(HEAD) + ".", branchSha1);
     }

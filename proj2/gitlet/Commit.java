@@ -47,10 +47,6 @@ public class Commit implements Serializable {
     }
 
 
-    /** add parentID2 */
-    public void addParentID2(String parentID2) {
-        this.parentID2 = parentID2;
-    }
 
     /** get the Date information*/
     private Date getDate() {
@@ -156,10 +152,12 @@ public class Commit implements Serializable {
     }
 
     /** RETURN parentID2 */
-    public String parentID2() {return this.parentID2;}
+    public String parentID2() {
+        return this.parentID2;
+    }
 
     @Override
-    public boolean equals(Object o){
+    public boolean equals(Object o) {
         Commit other = (Commit) o;
         if (this.commitSHA1().equals(other.commitSHA1())) {
             return true;

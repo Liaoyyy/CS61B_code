@@ -1,8 +1,13 @@
 package gitlet;
 
+import java.io.File;
 import java.util.*;
 
+import static gitlet.Commands.checkoutBranch;
 import static gitlet.Commit.readCommit;
+import static gitlet.Repository.*;
+import static gitlet.Utils.*;
+import static gitlet.Utils.readContentsAsString;
 
 public class MyUtils {
     public static class BFS {
@@ -69,5 +74,57 @@ public class MyUtils {
             flag = readCommit(flag.parentID());
         }
         return branch2init;
+    }
+
+    public static void untrackedFileCheck(Commit currentCommit, Commit branchCommit) {
+        List<String> curList = plainFilenamesIn(CWD);
+        for (String curFile: curList) {
+            if (currentCommit.getBlobSHA1(curFile) == null
+                    && branchCommit.getBlobSHA1(curFile) != null) {
+                System.out.println("There is an untracked file in the way; "
+                        + "delete it, or add and commit it first.");
+                System.exit(0);
+            }
+        }
+    }
+
+    public static Set<String> setUnion(Set<String> a, Set<String> b, Set<String> c) {
+        Set<String> unionSet = new HashSet<>();
+        unionSet.addAll(a);
+        unionSet.addAll(b);
+        unionSet.addAll(c);
+        return unionSet;
+    }
+
+    public static void mergeFailureCheck(String branchName) {
+        Stage add = readObject(ADDFILE, Stage.class);
+        Stage remove = readObject(REMOVEFILE, Stage.class);
+        if (!add.isEmpty() || !remove.isEmpty()) {
+            System.out.println("You have uncommitted changes.");
+            System.exit(0);
+        }
+
+        File branchFile = join(BRANCH_DIR, branchName);
+        if (!branchFile.exists()) {
+            System.out.println("A branch with that name does not exist.");
+            System.exit(0);
+        }
+        if (readContentsAsString(HEAD).equals(branchName)) {
+            System.out.println("Cannot merge a branch with itself.");
+            System.exit(0);
+        }
+    }
+
+    public static void splitCommitCheck(Commit split, Commit current,
+                                        Commit branch, String branchName) {
+        if (split.equals(current)) {
+            checkoutBranch(branchName);
+            System.out.println("Current branch fast-forwarded.");
+            System.exit(0);
+        } else if (split.equals(branch)) {
+            System.out.println("Given branch is an ancestor of the current branch.");
+            System.exit(0);
+        }
+
     }
 }
