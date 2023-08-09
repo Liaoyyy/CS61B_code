@@ -475,7 +475,7 @@ public class Commands implements Serializable {
         Graph G = readObject(COMMITGRAPH, Graph.class);
         BFS b = new BFS(G, currentSha1);
         HashSet<String> branch2init = paths(branchSha1);
-        String splitPointSha1 = b.SplitPoint(branch2init);
+        String splitPointSha1 = b.splitPoint(branch2init);
         if (splitPointSha1 != null) {
             splitCommit = readCommit(splitPointSha1);
         }

@@ -26,7 +26,7 @@ public class MyUtils {
             this.G = G;
         }
 
-        public String SplitPoint(Collection<String> collection) {
+        public String splitPoint(Collection<String> collection) {
             int resultIndex = findSplitPoint(vertex, collection);
             if (resultIndex != -1) {
                 return G.index2name(resultIndex);
