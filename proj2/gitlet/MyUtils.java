@@ -117,11 +117,11 @@ public class MyUtils {
 
     public static void splitCommitCheck(Commit split, Commit current,
                                         Commit branch, String branchName) {
-        if (split.equals(current)) {
+        if (split.commitSHA1().equals(current.commitSHA1())) {
             checkoutBranch(branchName);
             System.out.println("Current branch fast-forwarded.");
             System.exit(0);
-        } else if (split.equals(branch)) {
+        } else if (split.commitSHA1().equals(branch.commitSHA1())) {
             System.out.println("Given branch is an ancestor of the current branch.");
             System.exit(0);
         }

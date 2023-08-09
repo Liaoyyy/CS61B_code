@@ -130,6 +130,9 @@ public class Commit implements Serializable {
         DateFormat dateFormat = new SimpleDateFormat("EEE MMM d HH:mm:ss yyyy Z", Locale.ENGLISH);
         System.out.println("===");
         System.out.println("commit " + commitSHA1());
+        if (this.parentID2 != null) {
+            System.out.println(this.parentID.substring(0, 7) + " " + this.parentID2.substring(0, 7));
+        }
         System.out.println("Date: " + dateFormat.format(date));
         System.out.println(this.message);
         System.out.println();
@@ -156,12 +159,5 @@ public class Commit implements Serializable {
         return this.parentID2;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        Commit other = (Commit) o;
-        if (this.commitSHA1().equals(other.commitSHA1())) {
-            return true;
-        }
-        return false;
-    }
+
 }

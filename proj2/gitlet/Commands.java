@@ -108,7 +108,6 @@ public class Commands implements Serializable {
         blob.saveBlob(REMOVAL);
         writeObject(REMOVEFILE, remove);
 
-
     }
 
     public static void commit(String message, String parentID2) {
@@ -465,7 +464,6 @@ public class Commands implements Serializable {
         File head = join(BRANCH_DIR, readContentsAsString(HEAD));
         String currentSha1 = readContentsAsString(head);
         String branchSha1 = readContentsAsString(branchFile);
-
         Commit currentCommit = readCommit(currentSha1);
         Commit branchCommit = readCommit(branchSha1);
         untrackedFileCheck(currentCommit, branchCommit);
@@ -509,15 +507,12 @@ public class Commands implements Serializable {
                         rm(filename);
                     }
                 } else if (!splitBlob.equals(currentBlob)) {
-                    // case 2 and case 7
                     if (splitBlob.equals(branchBlob)) {
                         continue;
                     }
-                    // case 3
                     if (Objects.equals(currentBlob, branchBlob)) {
                         continue;
                     }
-                    // case 8
                     if (Objects.equals(currentBlob, branchBlob)) {
                         System.out.println("Encountered a merge conflict.");
                         System.out.println("<<<<<<< HEAD");
@@ -537,7 +532,6 @@ public class Commands implements Serializable {
                 }
             }
         }
-
         // save Objects
         commit("Merged " + branchName + "into"
                 + readContentsAsString(HEAD) + ".", branchSha1);

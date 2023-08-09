@@ -5,7 +5,7 @@ import java.util.HashSet;
 
 public class Graph implements Serializable {
     private ArrayList<String> vertexList;
-    private HashSet<Integer>[] adjList ;
+    private HashSet<Integer>[] adjList;
 
     private int vertexSize;
     private int adjSize;
@@ -40,7 +40,9 @@ public class Graph implements Serializable {
         adjList[index2].add(index1);
     }
 
-    public int vertexSize() { return this.vertexSize;}
+    public int vertexSize() {
+        return this.vertexSize;
+    }
 
     public Iterable<Integer> adj(int index) {
         return adjList[index];
