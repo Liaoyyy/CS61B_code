@@ -131,7 +131,8 @@ public class Commit implements Serializable {
         System.out.println("===");
         System.out.println("commit " + commitSHA1());
         if (this.parentID2 != null) {
-            System.out.println(this.parentID.substring(0, 7) + " " + this.parentID2.substring(0, 7));
+            System.out.println(this.parentID.substring(0, 7)
+                    + " " + this.parentID2.substring(0, 7));
         }
         System.out.println("Date: " + dateFormat.format(date));
         System.out.println(this.message);
