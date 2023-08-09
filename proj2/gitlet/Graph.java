@@ -14,7 +14,7 @@ public class Graph implements Serializable {
         int initialSize = 10;
         vertexSize = 0;
         vertexList = new ArrayList<>(initialSize);
-        adjList = new HashSet[initialSize];
+        adjList = (HashSet<Integer>[]) new HashSet[initialSize];
         for (int i = 0; i < initialSize; i++) {
             adjList[i] = new HashSet<Integer>();
         }
@@ -56,7 +56,7 @@ public class Graph implements Serializable {
 
 
     private HashSet<Integer>[] adjListResize(int newSize) {
-        HashSet<Integer>[] newAdjList = new HashSet[newSize];
+        HashSet<Integer>[] newAdjList = (HashSet<Integer>[]) new HashSet[newSize];
         for (int i = 0; i < vertexSize; i++) {
             newAdjList[i] = adjList[i];
         }
@@ -67,36 +67,4 @@ public class Graph implements Serializable {
         return newAdjList;
     }
 
-
-    public static void main(String[] args) {
-        Graph g = new Graph();
-        g.addVertex("a");
-        g.addVertex("b");
-        g.addVertex("c");
-        g.addVertex("d");
-        g.addVertex("e");
-        g.addVertex("f");
-        g.addVertex("g");
-
-        ArrayList<String> list = new ArrayList<>();
-        list.add("f");
-        list.add("c");
-        list.add("e");
-        list.add("g");
-
-        g.addEdge("a", "b");
-        g.addEdge("a", "g");
-        g.addEdge("b", "d");
-        g.addEdge("c", "b");
-        g.addEdge("c", "g");
-        g.addEdge("c", "e");
-        g.addEdge("e", "f");
-        g.addEdge("f", "g");
-
-        MyUtils.BFS b = new MyUtils.BFS(g, "b");
-        String splitPoint = b.SplitPoint(list);
-        System.out.println(splitPoint);
-
-        System.out.println("Hello this is a test \n hahaha");
-    }
 }

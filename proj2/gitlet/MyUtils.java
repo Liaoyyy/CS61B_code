@@ -57,13 +57,16 @@ public class MyUtils {
         HashSet<String> branch2init = new HashSet<>();
         branch2init.add(startSha1);
         Commit flag = readCommit(startSha1);
-        while (flag != null) {
+        while (flag.parentID() != null) {
             branch2init.add(flag.parentID());
             HashSet<String> newbranch = null;
             if (flag.parentID2() != null) {
                 newbranch = paths(flag.parentID2());
             }
-            branch2init.addAll(newbranch);
+            if (newbranch != null) {
+                branch2init.addAll(newbranch);
+            }
+            flag = readCommit(flag.parentID());
         }
         return branch2init;
     }
