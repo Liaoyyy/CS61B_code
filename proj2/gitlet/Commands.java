@@ -112,7 +112,6 @@ public class Commands implements Serializable {
     }
 
     public static void commit(String message, String parentID2) {
-        System.out.println("enter the commit");
         Stage add = readObject(ADDFILE, Stage.class);
         Stage remove = readObject(REMOVEFILE, Stage.class);
         File branch = join(BRANCH_DIR, readContentsAsString(HEAD));
@@ -531,12 +530,7 @@ public class Commands implements Serializable {
             String currentBlob = currentCommit.getBlobSHA1(filename);
             String branchBlob = branchCommit.getBlobSHA1(filename);
 
-            System.out.println("-----");
-            System.out.println(filename);
-            System.out.println("-----");
-
             if (splitBlob == null) {
-                System.out.println("hihihi");
                 if (branchBlob != null) {
                     System.out.println(branchBlob);
                     checkout(branchSha1, filename);
