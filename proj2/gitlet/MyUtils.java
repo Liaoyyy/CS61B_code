@@ -38,7 +38,7 @@ public class MyUtils {
             Queue<Integer> fringe = new PriorityQueue<Integer>();
 
             int index = G.name2index(vertexName);
-            if (collection.contains(index)) {
+            if (collection.contains(vertexName)) {
                 return index;
             }
             marked[index] = true;
