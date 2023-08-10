@@ -533,6 +533,8 @@ public class Commands implements Serializable {
         // save Objects
         commit("Merged " + branchName + " into "
                 + readContentsAsString(HEAD) + ".", branchSha1);
+        writeObject(COMMITGRAPH, G);
+
     }
 }
 
