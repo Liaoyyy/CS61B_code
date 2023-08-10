@@ -38,6 +38,9 @@ public class MyUtils {
             Queue<Integer> fringe = new PriorityQueue<Integer>();
 
             int index = G.name2index(vertexName);
+            if (collection.contains(index)) {
+                return index;
+            }
             marked[index] = true;
             fringe.add(index);
             while (!fringe.isEmpty()) {
@@ -125,6 +128,5 @@ public class MyUtils {
             System.out.println("Given branch is an ancestor of the current branch.");
             System.exit(0);
         }
-
     }
 }
