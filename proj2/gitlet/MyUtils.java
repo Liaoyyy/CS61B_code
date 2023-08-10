@@ -88,11 +88,11 @@ public class MyUtils {
         }
     }
 
-    public static Set<String> setUnion(Set<String> a, Set<String> b, Set<String> c) {
+    public static Set<String> setUnion(Commit a, Commit b, Commit c) {
         Set<String> unionSet = new HashSet<>();
-        unionSet.addAll(a);
-        unionSet.addAll(b);
-        unionSet.addAll(c);
+        unionSet.addAll(a.hashmap().keySet());
+        unionSet.addAll(b.hashmap().keySet());
+        unionSet.addAll(c.hashmap().keySet());
         return unionSet;
     }
 

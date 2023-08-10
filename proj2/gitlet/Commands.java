@@ -482,10 +482,7 @@ public class Commands implements Serializable {
         splitCommitCheck(splitCommit, currentCommit, branchCommit, branchName);
 
         // find the union set
-        Set<String> splitKeySet = splitCommit.hashmap().keySet();
-        Set<String> currentKeySet = currentCommit.hashmap().keySet();
-        Set<String> branchKeySet = branchCommit.hashmap().keySet();
-        Set<String> unionSet = setUnion(splitKeySet, currentKeySet, branchKeySet);
+        Set<String> unionSet = setUnion(splitCommit, currentCommit, branchCommit);
 
         // start to merge
         for (String filename: unionSet) {
@@ -507,15 +504,11 @@ public class Commands implements Serializable {
                         rm(filename);
                     }
                 } else if (!splitBlob.equals(currentBlob)) {
-                    if (splitBlob.equals(branchBlob)) {
-                        continue;
-                    }
-                    if (Objects.equals(currentBlob, branchBlob)) {
-                        continue;
-                    }
-                    if (Objects.equals(currentBlob, branchBlob)) {
+                    if (!Objects.equals(currentBlob, branchBlob)
+                            && !Objects.equals(splitBlob, branchBlob)) {
                         System.out.println("Encountered a merge conflict.");
-                        System.out.println("<<<<<<< HEAD");
+                        String newContents = new String();
+                        newContents = newContents.concat("<<<<<<< HEAD\n");
                         String currentContents = "";
                         String branchContents = "";
                         if (currentBlob != null) {
@@ -526,8 +519,13 @@ public class Commands implements Serializable {
                             Blob brBlob = readBlob(branchBlob);
                             branchContents = brBlob.contents();
                         }
-                        System.out.println(currentContents + "=======");
-                        System.out.println(branchContents + ">>>>>>>");
+                        currentContents = currentContents.concat("=======\n");
+                        branchContents = branchContents.concat(">>>>>>>\n");
+                        newContents = newContents.concat(currentContents);
+                        newContents = newContents.concat(branchContents);
+                        File f = join(CWD, filename);
+                        writeContents(f, newContents);
+                        add(filename);
                     }
                 }
             }
